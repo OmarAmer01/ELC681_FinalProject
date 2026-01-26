@@ -1,2 +1,8 @@
 /.pytest_cache
 /.vscode
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
