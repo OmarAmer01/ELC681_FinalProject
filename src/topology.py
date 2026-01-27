@@ -7,8 +7,8 @@ Date: 2026.01.18
 """
 
 from mininet.topo import Topo
-
-
+from typing import cast
+from mininet.node import Host
 
 class DumbbellTopology(Topo):
     """
