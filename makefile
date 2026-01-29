@@ -14,4 +14,5 @@ killall:
 
 clean: killall
 	rm report.html -f
+	rm figs/* -f
 

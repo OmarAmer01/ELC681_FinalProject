@@ -1,6 +1,5 @@
 
 import json
-import time
 import warnings
 import pytest
 from logging import Logger, getLogger
@@ -21,10 +20,7 @@ from mininet.link import TCLink
 from mininet.node import Host
 
 from src.topology import DumbbellTopology
-# from src.util import get_iperf_bw
-from src.util import PORTS
-
-# @pytest.fixture(scope="module", autouse=True)
+from src.util import PORTS, get_final_bw
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -79,111 +75,6 @@ def server(net):
     return cast(Host, net.get("server_S"))
 
 
-# @pytest.fixture
-# def iperf_server(server: Host, log: Logger, mode: Literal["TCP", "UDP"], report_interval: float):
-#     """Manage the iperf server"""
-
-#     log.info(f"Starting {mode} server...")
-#     if report_interval is not None:
-#         server.sendCmd(
-#             f"iperf -s -i {report_interval} {'-u' if mode == 'UDP' else ''} -e ")
-#     else:
-#         server.sendCmd(f"iperf -s {'-u' if mode == 'UDP' else ''} -e ")
-#     log.info(f"{mode} Server Started.")
-
-#     yield server
-
-#     server.sendInt()
-#     server.waitOutput()
-#     server.cmd("killall iperf")
-
-
-# @pytest.fixture
-# def run_iperf(log: Logger):
-#     """
-#     Runs iperf. Does not wait for output.
-#     """
-#     def _run(
-#             source: Host,
-#             destination: Host,
-#             mode: Literal["TCP", "UDP"],
-#             timeout: Optional[int],
-#             parallel: int,
-#             bandwidth: Optional[float],
-#             report_interval: float,
-#     ):
-#         # Basically we build the iperf command and make the
-#         # source call it.
-
-#         command: List[str] = ["iperf"]
-
-#         command.append(f"-c {destination.IP()}")
-
-#         if mode == "UDP":
-#             command.append("-u")
-#         else:
-#             if bandwidth is not None:
-#                 warnings.warn(
-#                     "Both bandwidth and TCP are specified. iperf will ignore the bandwidth option.")
-
-#         if timeout is not None:
-#             command.append(f"-t {timeout}")
-
-#         if parallel is not None:
-#             command.append(f"-P {parallel}")
-
-#         if bandwidth is not None:
-#             command.append(f"-b {bandwidth}M")
-
-#         # Enhanced reporting
-#         command.append("-e")
-
-#         # Report every X secs
-#         if report_interval is not None:
-#             command.append(f"-i {report_interval}")
-
-#         iperf_send_cmd = " ".join(command)
-
-#         log.info(f"Executing on {source.name} -> {iperf_send_cmd} ")
-#         source.sendCmd(iperf_send_cmd)
-
-#     return _run
-
-
-# @pytest.fixture
-# def collect_iperf_from_client(log: Logger):
-#     """This is for TCP."""
-#     def _collect(client: Host, report_interval: float):
-#         output = client.waitOutput()
-#         log.info("\n" + output)
-#         return get_iperf_bw(output)
-
-#     return _collect
-
-
-# @pytest.fixture
-# def collect_iperf_from_server(log: Logger):
-#     """
-#     This is for UDP.
-#     Since we need all connections to stop sending
-#     before we colect the results, we need a separate
-#     function for data collection from the server.
-#     """
-
-#     def _collect(server: Host, clients: List[Host], report_interval: float):
-#         for client in clients:
-#             # Ignore the output of the client,
-#             # we dont need it for UDP
-#             client.waitOutput()
-
-#         server.sendInt()
-#         output = server.waitOutput()
-#         log.info("\n" + output)
-#         return get_iperf_bw(output)
-
-#     return _collect
-
-
 @pytest.fixture
 def iperf3_server(server: Host, log: Logger, mode: Literal["TCP", "UDP"]):
     """
@@ -202,7 +93,6 @@ def iperf3_server(server: Host, log: Logger, mode: Literal["TCP", "UDP"]):
 
     yield server
 
-    # Kill iperf3 server after test
     server.cmd("pkill iperf3")
 
 
@@ -220,7 +110,7 @@ def run_iperf3(log: Logger):
         timeout: Optional[int] = None,
         parallel: int = 1,
         bandwidth: Optional[float] = None,
-        report_interval: Optional[float] = 0.25,
+        report_interval: Optional[float] = 0.1,
     ):
         cmd = ["iperf3", "-c", destination.IP(), "--json", "-4"]
 
@@ -257,7 +147,6 @@ def collect_iperf3(log: Logger):
     """
     def _collect(client: Host):
         output = client.waitOutput()
-        # log.info("\n" + output)
         try:
             data = json.loads(output)
         except json.JSONDecodeError as e:
@@ -269,11 +158,13 @@ def collect_iperf3(log: Logger):
 
 
 @pytest.fixture
-def plot_competition():
+def plot_competition(request):
     """
     Collect the data to plot the competition
     between bronze and gold.
     """
+
+    plot_title = request.node.name
 
     def _get_data_points(iperf_stats: Dict) -> Tuple[List[float], List[float]]:
         """
@@ -291,43 +182,34 @@ def plot_competition():
             time_axis.append(start_time)
             mbps_axis.append(mbps)
 
-        breakpoint()
         return (time_axis, mbps_axis)
 
-    def _save_plot(bronze_stats: Dict, gold_stats: Dict):
+    def _save_plot(bronze_stats: Dict, gold_stats: Dict, gold_sla: float):
 
-        # Get the data
         bronze_data_points = _get_data_points(bronze_stats)
         gold_data_points = _get_data_points(gold_stats)
 
-        # Plot something nice
+        bronze_total_bw = get_final_bw(bronze_stats)
+        gold_total_bw = get_final_bw(gold_stats)
+
         fig, ax = plt.subplots(figsize=(8, 5))
-        ax.plot(*bronze_data_points)
-        plt.savefig("bronze.png", format="png")
-        # breakpoint()
+        ax.set_xlabel("Time (s)", fontsize=14)
+        ax.set_ylabel("Bandwidth (Mbps)", fontsize=14)
+        ax.set_title(plot_title)
+
+        ax.plot(*bronze_data_points, label="Bronze")
+        ax.plot(*gold_data_points, label="Gold")
+
+        ax.axhline(y=bronze_total_bw, linestyle=":", linewidth=2,
+                   label="Bronze Total Bandwidth", color="tab:red")
+        ax.axhline(y=gold_total_bw, linestyle=":", linewidth=2,
+                   label="Gold Total Bandwidth", color="tab:green")
+
+        ax.axhline(y=gold_sla, linestyle="-.", linewidth=2,
+                   label="Gold SLA", color="tab:green")
+
+        plt.legend()
+
+        plt.savefig(f"figs/{plot_title}.svg", format="svg")
 
     return _save_plot
-
-
-# @pytest.fixture
-# def collect_iperf3_from_server(log: Logger):
-#     """
-#     Collect iperf3 output from server for UDP.
-#     Ensures all clients have finished sending.
-#     Returns parsed dict.
-#     """
-#     def _collect(server: Host, clients: List[Host]):
-#         for client in clients:
-#             client.waitOutput()  # wait for client to finish
-
-#         output = server.waitOutput()
-#         breakpoint()
-#         # log.info("\n" + output)
-#         try:
-#             data = json.loads(output)
-#         except json.JSONDecodeError as e:
-#             log.error(f"Failed to parse iperf3 JSON output: {e}")
-#             raise
-#         return data
-
-#     return _collect

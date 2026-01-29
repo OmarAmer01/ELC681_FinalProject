@@ -19,14 +19,13 @@ from src.util import get_final_bw
     "mode, bandwidth, timeout, parallel",
     [
         ("TCP", None, 10, 4),
-        # ("TCP", None, 10, 4),
-        # ("TCP", None, 10, 8),
+        ("TCP", None, 10, 8),
 
-        # ("UDP", 1, 10, 2),
-        # ("UDP", 1.5, 10, 2),
-        # ("UDP", 4, 10, 2),
-        # ("UDP", 5, 10, 2),
-        # ("UDP", 6, 10, 2)
+        ("UDP", 1, 10, 2),
+        ("UDP", 1.5, 10, 2),
+        ("UDP", 4, 10, 2),
+        ("UDP", 5, 10, 2),
+        ("UDP", 6, 10, 2)
     ],
 )
 def test_best_effort_all_no_control(
@@ -41,7 +40,7 @@ def test_best_effort_all_no_control(
     timeout,
     parallel,
     mode,
-    plot_competition
+    plot_competition,
 ):
 
     run_iperf3(
@@ -70,7 +69,7 @@ def test_best_effort_all_no_control(
     bronze_bw = get_final_bw(bronze_stats)
     gold_bw = get_final_bw(gold_stats)
 
-    plot_competition(bronze_stats, gold_stats)
+    plot_competition(bronze_stats, gold_stats, 5)
 
     log.info(f"Gold Bandwidth {gold_bw} Mbps")
     log.info(f"Bronze Bandwidth {bronze_bw} Mbps")
