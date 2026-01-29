@@ -9,6 +9,7 @@ Date: 2026.01.18
 from mininet.topo import Topo
 from typing import cast
 from mininet.node import Host
+from mininet.link import TCLink
 
 class DumbbellTopology(Topo):
     """
@@ -31,3 +32,6 @@ class DumbbellTopology(Topo):
 
         self.addLink(slow_sw, fast_switch, bw=10)
         self.addLink(fast_switch, server, bw=100)
+
+
+topos = {'topo': DumbbellTopology}
