@@ -11,16 +11,20 @@ from typing import (
     Dict,
     Tuple
 )
+from pathlib import Path
+import subprocess
+import socket
+import time
 
 import matplotlib.pyplot as plt
-
 from mininet.clean import cleanup
 from mininet.net import Mininet
 from mininet.link import TCLink
 from mininet.node import Host
 
-from src.topology import DumbbellTopology
+from src.topology import DumbbellTopology_MININET, DumbbellTopology_RYU
 from src.util import PORTS, get_final_bw
+from mininet.node import RemoteController, OVSKernelSwitch
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -44,14 +48,54 @@ def log() -> Logger:
     return getLogger()
 
 
+def start_ryu(ryu_app_path: Path, port: int = 6767):
+    abs_path = ryu_app_path.absolute()
+    subprocess.Popen(
+        ["ryu-manager", abs_path, f"--ofp-tcp-listen-port", str(port)],
+        stdout=None,
+        stderr=None,
+    )
+
+def wait_for_controller(ip='127.0.0.1', port=6969, timeout=10):
+    """Wait until a controller is listening on ip:port"""
+    start = time.time()
+    while True:
+        try:
+            with socket.create_connection((ip, port), timeout=1):
+                return
+        except (ConnectionRefusedError, OSError):
+            if time.time() - start > timeout:
+                raise RuntimeError(f"Controller {ip}:{port} not reachable")
+            time.sleep(0.1)
+
 @pytest.fixture
-def net():
+def net(request, log: Logger):
     """
     Starts mininet with our dumbbell topology
+
+    Use @pytest.mark.ryu to enable Ryu controller
     """
 
-    topo = DumbbellTopology()
-    net = Mininet(topo=topo, link=TCLink)
+    marker = request.node.get_closest_marker('ryu')
+    use_ryu = marker is not None
+    ryu_app_path = marker.args[0] if use_ryu and len(marker.args) > 0 else None
+
+
+    if use_ryu:
+        log.info("Starting network with Ryu controller")
+        start_ryu(Path("src/ryu_hardcoded.py"), 6767)
+        wait_for_controller('127.0.0.1', 6767)
+        log.info("Ryu controller is ready!")
+        net = Mininet(
+            topo=DumbbellTopology_RYU(),
+            link=TCLink,
+            controller=RemoteController('c0', ip='127.0.0.1', port=6767),
+            switch=OVSKernelSwitch
+        )
+    else:
+        log.info("Starting network with vanilla controller")
+        net = Mininet(topo=DumbbellTopology_MININET, link=TCLink)
+
     net.start()
     yield net
     net.stop()
