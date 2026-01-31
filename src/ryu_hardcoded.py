@@ -55,8 +55,10 @@ class HardCodedQoS(app_manager.RyuApp):
         -- --id=@newqos create QoS type=linux-htb other-config:max-rate=10000000 \
         queues:1=@gold queues:2=@bronze \
         -- --id=@gold create Queue other-config:min-rate=7000000 other-config:max-rate=10000000 \
-        -- --id=@bronze create Queue other-config:min-rate=3000000 other-config:max-rate=10000000
+        -- --id=@bronze create Queue other-config:min-rate=3000000 other-config:max-rate=3000000
         """
+
+
 
         # When we type 'links' in mininet it
         # shows us that the bottleneck link (10Mbps)

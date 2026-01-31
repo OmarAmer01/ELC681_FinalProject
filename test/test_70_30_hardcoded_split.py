@@ -18,16 +18,16 @@ from src.util import get_final_bw
 @pytest.mark.parametrize(
     "mode, gold_bandwidth, bronze_bandwidth, timeout, parallel",
     [
-        ("TCP", None, None, 10, 4),
         ("TCP", None, None, 15, 8), # More time to average the results
 
         ("UDP", 1, 1, 10, None),
+        ("UDP", 5, 5, 10, 2),
+
         ("UDP", 9, 1, 10, None),
         ("UDP", 1, 9, 10, None),
-        ("UDP", 1.5, 1.5, 10, 2),
-        ("UDP", 4, 4, 10, 2),
-        ("UDP", 5, 5, 10, 2),
-        ("UDP", 6, 6, 10, 2)
+
+        ("UDP", 6, 5, 10, None),
+        ("UDP", 5, 6, 10, None),
     ],
 )
 @pytest.mark.ryu("woowo")

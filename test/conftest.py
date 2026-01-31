@@ -17,12 +17,10 @@ import socket
 import time
 
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MultipleLocator
 from mininet.clean import cleanup
 from mininet.net import Mininet
 from mininet.link import TCLink
 from mininet.node import Host
-import test
 
 from src.topology import DumbbellTopology_MININET, DumbbellTopology_RYU
 from src.util import PORTS, get_final_bw
@@ -329,9 +327,14 @@ def check_bw(request):
         requested_gold_bw *= parallel
 
         if mode == "UDP":
-            total_requested = requested_gold_bw + requested_bronze_bw
+            if test_mode == "70-30":
+                total_requested = requested_gold_bw + \
+                    min(requested_bronze_bw, 3)
+            else:
+                total_requested = requested_gold_bw + requested_bronze_bw
+
             if total_requested <= bottleneck:
-                return (requested_gold_bw, requested_bronze_bw)
+                return (requested_gold_bw, min(requested_bronze_bw, 3))
             else:
                 if test_mode == "BEST_EFFORT":
                     scale = bottleneck / total_requested

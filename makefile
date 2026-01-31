@@ -9,6 +9,12 @@ test_70_30:
 all:
 	@sudo -E python3 -m pytest -s --html=report.html --self-contained-html
 
+demo_dataset:
+	@sudo -E python3 src/data_gen.py 30
+
+dataset:
+	@sudo -E python3 src/data_gen.py 600
+
 results:
 	python -m http.server
 
@@ -22,4 +28,5 @@ clean: killall
 	rm report.html -f
 	rm figs/* -f
 	sudo ovs-vsctl -- --all destroy QoS -- --all destroy Queue
+	rm data/*
 
