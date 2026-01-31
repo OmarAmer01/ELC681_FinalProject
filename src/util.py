@@ -5,7 +5,7 @@ Date: 2026.01.19
 """
 
 import re
-from typing import Dict, List
+from typing import Dict, List, Literal
 from collections import defaultdict
 from enum import Enum
 

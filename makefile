@@ -1,12 +1,13 @@
-.PHONY: test clean killall collect all
+.PHONY: test_best_effort test_70_30 all clean killall collect results
 
 test_best_effort:
 	@sudo -E python3 -m pytest -k test_best_effort_all_no_control -s --html=report.html --self-contained-html
 
-make test_70_30:
+test_70_30:
 	@sudo -E python3 -m pytest -k test_70_30_hardcoded_split -s --html=report.html --self-contained-html
 
-all: test_best_effort
+all:
+	@sudo -E python3 -m pytest -s --html=report.html --self-contained-html
 
 results:
 	python -m http.server

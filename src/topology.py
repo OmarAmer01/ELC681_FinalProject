@@ -32,11 +32,11 @@ class DumbbellTopology_RYU(Topo):
         fast_switch = self.addSwitch('fast_SW2')
 
         # Add links
-        self.addLink(gold_host, slow_sw,)
-        self.addLink(bronze_host, slow_sw,)
+        self.addLink(gold_host, slow_sw)
+        self.addLink(bronze_host, slow_sw)
 
         self.addLink(slow_sw, fast_switch)
-        self.addLink(fast_switch, server,)
+        self.addLink(fast_switch, server)
 
 
 class DumbbellTopology_MININET(Topo):

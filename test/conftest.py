@@ -17,14 +17,23 @@ import socket
 import time
 
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator
 from mininet.clean import cleanup
 from mininet.net import Mininet
 from mininet.link import TCLink
 from mininet.node import Host
+import test
 
 from src.topology import DumbbellTopology_MININET, DumbbellTopology_RYU
 from src.util import PORTS, get_final_bw
 from mininet.node import RemoteController, OVSKernelSwitch
+
+
+def pytest_configure(config):
+    # register an additional marker
+    config.addinivalue_line(
+        "markers", "ryu(path-to-ryu-app): Use the specified Ryu application as the controller instead of the default Mininet controller"
+    )
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -50,11 +59,13 @@ def log() -> Logger:
 
 def start_ryu(ryu_app_path: Path, port: int = 6767):
     abs_path = ryu_app_path.absolute()
-    subprocess.Popen(
+    proc = subprocess.Popen(
         ["ryu-manager", abs_path, f"--ofp-tcp-listen-port", str(port)],
         stdout=None,
         stderr=None,
     )
+    return proc
+
 
 def wait_for_controller(ip='127.0.0.1', port=6969, timeout=10):
     """Wait until a controller is listening on ip:port"""
@@ -68,6 +79,7 @@ def wait_for_controller(ip='127.0.0.1', port=6969, timeout=10):
                 raise RuntimeError(f"Controller {ip}:{port} not reachable")
             time.sleep(0.1)
 
+
 @pytest.fixture
 def net(request, log: Logger):
     """
@@ -79,11 +91,10 @@ def net(request, log: Logger):
     marker = request.node.get_closest_marker('ryu')
     use_ryu = marker is not None
     ryu_app_path = marker.args[0] if use_ryu and len(marker.args) > 0 else None
-
-
+    proc = None
     if use_ryu:
         log.info("Starting network with Ryu controller")
-        start_ryu(Path("src/ryu_hardcoded.py"), 6767)
+        proc = start_ryu(Path("src/ryu_hardcoded.py"), 6767)
         wait_for_controller('127.0.0.1', 6767)
         log.info("Ryu controller is ready!")
         net = Mininet(
@@ -94,10 +105,12 @@ def net(request, log: Logger):
         )
     else:
         log.info("Starting network with vanilla controller")
-        net = Mininet(topo=DumbbellTopology_MININET, link=TCLink)
+        net = Mininet(topo=DumbbellTopology_MININET(), link=TCLink)
 
     net.start()
     yield net
+    if proc is not None:
+        proc.terminate()
     net.stop()
 
 
@@ -160,11 +173,9 @@ def run_iperf3(log: Logger):
 
         if mode == "UDP":
             cmd.append("-u")
-            if bandwidth is not None:
-                cmd.append(f"-b {bandwidth}M")
-        else:
-            if bandwidth is not None:
-                warnings.warn("TCP ignores bandwidth option")
+
+        if bandwidth is not None:
+            cmd.append(f"-b {bandwidth}M")
 
         if timeout is not None:
             cmd.append(f"-t {timeout}")
@@ -228,7 +239,7 @@ def plot_competition(request):
 
         return (time_axis, mbps_axis)
 
-    def _save_plot(bronze_stats: Dict, gold_stats: Dict, gold_sla: float):
+    def _save_plot(bronze_stats: Dict, gold_stats: Dict, gold_sla: Optional[float]):
 
         bronze_data_points = _get_data_points(bronze_stats)
         gold_data_points = _get_data_points(gold_stats)
@@ -241,6 +252,10 @@ def plot_competition(request):
         ax.set_ylabel("Bandwidth (Mbps)", fontsize=14)
         ax.set_title(plot_title)
 
+        # ax.yaxis.set_major_locator(MultipleLocator(5))
+        # ax.yaxis.set_minor_locator(MultipleLocator(1))
+        # ax.tick_params(axis="y", which="minor", length=4)
+
         ax.plot(*bronze_data_points, label="Bronze")
         ax.plot(*gold_data_points, label="Gold")
 
@@ -249,11 +264,78 @@ def plot_competition(request):
         ax.axhline(y=gold_total_bw, linestyle=":", linewidth=2,
                    label="Gold Total Bandwidth", color="tab:green")
 
-        ax.axhline(y=gold_sla, linestyle="-.", linewidth=2,
-                   label="Gold SLA", color="tab:green")
+        # yticks = list(ax.get_yticks())
+        # yticks.extend([bronze_total_bw, gold_total_bw])
+        if gold_sla is not None:
+            ax.axhline(y=gold_sla, linestyle="-.", linewidth=2,
+                       label="Gold SLA", color="tab:green")
+            # yticks.extend([gold_sla])
+
+        # yticks = sorted(set(yticks))
+        # ax.set_yticks(yticks)
 
         plt.legend()
 
         plt.savefig(f"figs/{plot_title}.svg", format="svg")
 
     return _save_plot
+
+
+@pytest.fixture
+def check_bw(request):
+    test_name = request.node.name
+    test_mode: Literal["BEST_EFFORT", "70-30", "AI"]
+    if 'best_effort' in test_name:
+        test_mode = "BEST_EFFORT"
+    elif '70' in test_name:
+        test_mode = "70-30"
+    else:
+        test_mode = "AI"
+
+    def _check_bw(
+        requested_gold_bw: float,
+        requested_bronze_bw: float,
+        mode: Literal["TCP", "UDP"],
+        parallel: Optional[int],
+        bottleneck: float = 10
+    ) -> Tuple[float, float]:
+        """
+        Returns the correct values for the bronze and gold bandwidth
+        for the different test modes that we have
+        """
+
+        if test_mode == "AI":
+            raise NotImplementedError
+
+        if mode == "TCP":
+            # TCP tries its best to send
+            # using the maximum allowed rate.
+            if test_mode == "BEST_EFFORT":
+                gold_bw = bronze_bw = bottleneck / 2
+                # return (5, 5)
+            elif test_mode == "70-30":
+                gold_bw = bottleneck * 0.7
+                bronze_bw = bottleneck * 0.3
+
+            return (gold_bw, bronze_bw)
+
+        # UDP sends as fast as the requsted bandwidth.
+        # If no congestion, then every one gets what they need
+        # in best effort
+        if not parallel:
+            parallel = 1
+
+        requested_bronze_bw *= parallel
+        requested_gold_bw *= parallel
+
+        if mode == "UDP":
+            total_requested = requested_gold_bw + requested_bronze_bw
+            if total_requested <= bottleneck:
+                return (requested_gold_bw, requested_bronze_bw)
+            else:
+                if test_mode == "BEST_EFFORT":
+                    scale = bottleneck / total_requested
+                    return (requested_gold_bw * scale, requested_bronze_bw * scale)
+                elif test_mode == "70-30":
+                    return (bottleneck * 0.7, bottleneck * 0.3)
+    return _check_bw
