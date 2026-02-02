@@ -106,10 +106,7 @@ if __name__ == "__main__":
     # Save the figure to have something to talk about in the presentation
     plt.savefig(f"data/gen_data_{duration}.svg", format="svg")
 
-    # Save the "dataset" in .npy
-    np.save(f"data/bw_list_{duration}.npy", bw_list)
-
-    # And in csv too for good measure, even tho its a single column
+    # And in csv too for training, even tho its a single column
     np.savetxt(f"data/bw_list_{duration}.csv", bw_list, delimiter=",")
 
     log.info("Stopping Mininet network")
