@@ -1,6 +1,6 @@
 """
 Test: All hosts are best-effort when no rules are implemented.
-Expected Result: Each host should get approx 5Mbps
+Expected Result: Each host will get what it can
 Author: Omar T. Amer
 Date: 2026.01.18
 """
@@ -45,7 +45,8 @@ def test_best_effort_all_no_control(
     plot_competition,
     check_bw
 ):
-
+    start_iperf3, stop_iperf3 = iperf3_server
+    start_iperf3()
     run_iperf3(
         gold,
         server,
@@ -68,6 +69,8 @@ def test_best_effort_all_no_control(
 
     bronze_stats = collect_iperf3(bronze)
     gold_stats = collect_iperf3(gold)
+
+    stop_iperf3()
 
     bronze_actual_bw = get_final_bw(bronze_stats)
     gold_actual_bw = get_final_bw(gold_stats)

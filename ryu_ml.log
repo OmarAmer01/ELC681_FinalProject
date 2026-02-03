@@ -1,0 +1,173 @@
+loading app /home/mininet/project/src/ryu_ml.py
+loading app ryu.controller.ofp_handler
+instantiating app /home/mininet/project/src/ryu_ml.py of LinearRegressionQoS
+instantiating app ryu.controller.ofp_handler of OFPHandler
+570c2d83-033a-4354-b810-c95e696dfb7f
+1317cd40-3268-4002-a895-28c254407286
+1ced4a16-8de6-4acf-8c1e-c6df3c8930f2
+Cached queue UUIDs - Gold: 1317cd40-3268-4002-a895-28c254407286, Bronze: 1ced4a16-8de6-4acf-8c1e-c6df3c8930f2
+Started dynamic QoS monitoring
+QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+
+Prediction: 7.00 Mbps
+=====================================
+QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+6.71
+Prediction: 7.00 Mbps
+=====================================
+QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+6.71 6.47
+Prediction: 7.00 Mbps
+=====================================
+QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+6.71 6.47 6.88
+Prediction: 7.00 Mbps
+=====================================
+QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+6.71 6.47 6.88 6.13
+Prediction: 7.00 Mbps
+=====================================
+QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+6.71 6.47 6.88 6.13 7.00
+Prediction: 7.00 Mbps
+=====================================
+QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+6.71 6.47 6.88 6.13 7.00 6.81
+Prediction: 7.00 Mbps
+=====================================
+QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+6.71 6.47 6.88 6.13 7.00 6.81 6.99
+Prediction: 7.00 Mbps
+=====================================
+QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+6.71 6.47 6.88 6.13 7.00 6.81 6.99 6.74
+Prediction: 7.00 Mbps
+=====================================
+QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+6.71 6.47 6.88 6.13 7.00 6.81 6.99 6.74 6.92
+Prediction: 7.00 Mbps
+=====================================
+QoS updated - Gold: 6.90Mbps, Bronze: 3.10Mbps
+6.71 6.47 6.88 6.13 7.00 6.81 6.99 6.74 6.92 6.77
+Prediction: 6.90 Mbps
+=====================================
+QoS updated - Gold: 6.89Mbps, Bronze: 3.11Mbps
+6.47 6.88 6.13 7.00 6.81 6.99 6.74 6.92 6.77 6.89
+Prediction: 6.86 Mbps
+=====================================
+QoS updated - Gold: 6.74Mbps, Bronze: 3.26Mbps
+6.88 6.13 7.00 6.81 6.99 6.74 6.92 6.77 6.89 6.63
+Prediction: 6.74 Mbps
+=====================================
+QoS updated - Gold: 6.86Mbps, Bronze: 3.14Mbps
+6.13 7.00 6.81 6.99 6.74 6.92 6.77 6.89 6.63 6.86
+Prediction: 6.69 Mbps
+=====================================
+QoS updated - Gold: 6.55Mbps, Bronze: 3.45Mbps
+7.00 6.81 6.99 6.74 6.92 6.77 6.89 6.63 6.86 6.53
+Prediction: 6.55 Mbps
+=====================================
+QoS updated - Gold: 6.55Mbps, Bronze: 3.45Mbps
+6.81 6.99 6.74 6.92 6.77 6.89 6.63 6.86 6.53 6.55
+Prediction: 6.55 Mbps
+=====================================
+QoS updated - Gold: 6.32Mbps, Bronze: 3.68Mbps
+6.99 6.74 6.92 6.77 6.89 6.63 6.86 6.53 6.55 5.83
+Prediction: 6.32 Mbps
+=====================================
+QoS updated - Gold: 6.43Mbps, Bronze: 3.57Mbps
+6.74 6.92 6.77 6.89 6.63 6.86 6.53 6.55 5.83 6.43
+Prediction: 6.31 Mbps
+=====================================
+QoS updated - Gold: 6.03Mbps, Bronze: 3.97Mbps
+6.92 6.77 6.89 6.63 6.86 6.53 6.55 5.83 6.43 5.51
+Prediction: 6.03 Mbps
+=====================================
+QoS updated - Gold: 6.32Mbps, Bronze: 3.68Mbps
+6.77 6.89 6.63 6.86 6.53 6.55 5.83 6.43 5.51 6.32
+Prediction: 6.03 Mbps
+=====================================
+QoS updated - Gold: 5.76Mbps, Bronze: 4.24Mbps
+6.89 6.63 6.86 6.53 6.55 5.83 6.43 5.51 6.32 5.34
+Prediction: 5.76 Mbps
+=====================================
+QoS updated - Gold: 6.21Mbps, Bronze: 3.79Mbps
+6.63 6.86 6.53 6.55 5.83 6.43 5.51 6.32 5.34 6.21
+Prediction: 5.89 Mbps
+=====================================
+QoS updated - Gold: 5.99Mbps, Bronze: 4.01Mbps
+6.86 6.53 6.55 5.83 6.43 5.51 6.32 5.34 6.21 5.99
+Prediction: 5.75 Mbps
+=====================================
+QoS updated - Gold: 6.00Mbps, Bronze: 4.00Mbps
+6.53 6.55 5.83 6.43 5.51 6.32 5.34 6.21 5.99 6.00
+Prediction: 5.90 Mbps
+=====================================
+QoS updated - Gold: 5.90Mbps, Bronze: 4.10Mbps
+6.55 5.83 6.43 5.51 6.32 5.34 6.21 5.99 6.00 5.90
+Prediction: 5.76 Mbps
+=====================================
+QoS updated - Gold: 5.92Mbps, Bronze: 4.08Mbps
+5.83 6.43 5.51 6.32 5.34 6.21 5.99 6.00 5.90 5.86
+Prediction: 5.92 Mbps
+=====================================
+QoS updated - Gold: 5.76Mbps, Bronze: 4.24Mbps
+6.43 5.51 6.32 5.34 6.21 5.99 6.00 5.90 5.86 5.71
+Prediction: 5.76 Mbps
+=====================================
+QoS updated - Gold: 5.76Mbps, Bronze: 4.24Mbps
+5.51 6.32 5.34 6.21 5.99 6.00 5.90 5.86 5.71 5.69
+Prediction: 5.76 Mbps
+=====================================
+QoS updated - Gold: 5.69Mbps, Bronze: 4.31Mbps
+6.32 5.34 6.21 5.99 6.00 5.90 5.86 5.71 5.69 5.69
+Prediction: 5.66 Mbps
+=====================================
+QoS updated - Gold: 5.63Mbps, Bronze: 4.37Mbps
+5.34 6.21 5.99 6.00 5.90 5.86 5.71 5.69 5.69 5.51
+Prediction: 5.63 Mbps
+=====================================
+QoS updated - Gold: 5.64Mbps, Bronze: 4.36Mbps
+6.21 5.99 6.00 5.90 5.86 5.71 5.69 5.69 5.51 5.64
+Prediction: 5.55 Mbps
+=====================================
+QoS updated - Gold: 5.52Mbps, Bronze: 4.48Mbps
+5.99 6.00 5.90 5.86 5.71 5.69 5.69 5.51 5.64 5.39
+Prediction: 5.52 Mbps
+=====================================
+QoS updated - Gold: 5.47Mbps, Bronze: 4.53Mbps
+6.00 5.90 5.86 5.71 5.69 5.69 5.51 5.64 5.39 5.47
+Prediction: 5.46 Mbps
+=====================================
+QoS updated - Gold: 5.39Mbps, Bronze: 4.61Mbps
+5.90 5.86 5.71 5.69 5.69 5.51 5.64 5.39 5.47 5.24
+Prediction: 5.39 Mbps
+=====================================
+QoS updated - Gold: 5.39Mbps, Bronze: 4.61Mbps
+5.86 5.71 5.69 5.69 5.51 5.64 5.39 5.47 5.24 5.39
+Prediction: 5.37 Mbps
+=====================================
+QoS updated - Gold: 5.28Mbps, Bronze: 4.72Mbps
+5.71 5.69 5.69 5.51 5.64 5.39 5.47 5.24 5.39 5.24
+Prediction: 5.28 Mbps
+=====================================
+QoS updated - Gold: 5.29Mbps, Bronze: 4.71Mbps
+5.69 5.69 5.51 5.64 5.39 5.47 5.24 5.39 5.24 5.29
+Prediction: 5.28 Mbps
+=====================================
+QoS updated - Gold: 5.22Mbps, Bronze: 4.78Mbps
+5.69 5.51 5.64 5.39 5.47 5.24 5.39 5.24 5.29 5.22
+Prediction: 5.22 Mbps
+=====================================
+QoS updated - Gold: 5.22Mbps, Bronze: 4.78Mbps
+5.51 5.64 5.39 5.47 5.24 5.39 5.24 5.29 5.22 5.17
+Prediction: 5.22 Mbps
+=====================================
+QoS updated - Gold: 5.19Mbps, Bronze: 4.81Mbps
+5.64 5.39 5.47 5.24 5.39 5.24 5.29 5.22 5.17 5.19
+Prediction: 5.17 Mbps
+=====================================
+QoS updated - Gold: 5.19Mbps, Bronze: 4.81Mbps
+5.39 5.47 5.24 5.39 5.24 5.29 5.22 5.17 5.19 5.19
+Prediction: 5.17 Mbps
+=====================================

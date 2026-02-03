@@ -22,8 +22,48 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mininet.node import Host
 
-from util import PORTS
-from topology import DumbbellTopology_MININET
+from src.util import PORTS
+from src.topology import DumbbellTopology_MININET
+
+import numpy as np
+import time
+
+
+def generate_ar1_traffic(
+    mean_mbps: float,
+    variance: float,
+    phi: float,
+    duration_sec: int
+):
+    """
+    Generates a realistic traffic series.
+    mean_mbps: Average target rate
+
+    variance: How much the traffic 'bursts'
+    phi: Correlation (0.8 to 0.99 for realistic steady flows)
+    """
+    n_steps = duration_sec
+    samples = np.zeros(n_steps)
+    c = mean_mbps * (1 - phi)
+    sigma = np.sqrt(variance)
+    current_x = mean_mbps  # Start at mean
+    for t in range(n_steps):
+        noise = np.random.normal(0, sigma)
+        current_x = c + phi * current_x + noise
+        traffic = max(0.1, current_x)  # Traffic can't be negative
+        samples[t] = min(traffic, 10)  # Traffic can't be above 10mbps
+
+    return samples
+
+
+def two_sines_traffic(duration):
+    t_2 = np.arange(0, duration, 2, dtype=np.float32)
+    gold_rates = np.maximum(
+        10 * np.abs(np.sin(2 * np.pi * t_2 / duration)),
+        0.01  # I think sending with zero bandwidth makes iperf send with max allowed bandwidth
+    )
+    return gold_rates
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -53,10 +93,11 @@ if __name__ == "__main__":
 
     # From Zero -> Duration
     # A new value is requested every 2 secs
-    t_2 = np.arange(0, duration, 2, dtype=np.float32)
-    gold_rates = np.maximum(
-        10 * np.abs(np.sin(2 * np.pi * t_2 / duration)),
-        0.01  # I think sending with zero bandwidth makes iperf send with max allowed bandwidth
+    gold_rates = generate_ar1_traffic(
+        mean_mbps=5,
+        variance=3,
+        phi=0.9,
+        duration_sec=duration//2
     )
 
     # Time for iperf, we need to start a
@@ -97,7 +138,10 @@ if __name__ == "__main__":
     fig, ax = plt.subplots(figsize=(8, 5))
 
     ax.plot(t_1, bw_list, label="Generated Data")
+
+    t_2 = np.arange(0, duration, 2, dtype=np.float32)
     ax.plot(t_2, gold_rates, label="Requested Rates")
+
     ax.set_xlabel("Time (s)", fontsize=14)
     ax.set_ylabel("Bandwidth (Mbps)", fontsize=14)
     ax.set_title("Dataset Generation")

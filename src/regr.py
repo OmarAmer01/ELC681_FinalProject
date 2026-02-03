@@ -71,7 +71,7 @@ if __name__ == "__main__":
     ax.set_ylabel("Bandwidth (Mbps)", fontsize=14)
     ax.set_title("Prediction vs Collected")
     plt.legend()
-    plt.savefig("pred_" + args.data_csv.name.split('.')[0] + ".svg")
+    plt.savefig("data/pred_" + args.data_csv.name.split('.')[0] + ".svg")
 
     mae = mean_absolute_error(values[:-WINDOW], preds)
     mse = mean_squared_error(values[:-WINDOW], preds)

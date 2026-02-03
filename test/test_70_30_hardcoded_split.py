@@ -1,8 +1,8 @@
 """
-Test: All hosts are best-effort when no rules are implemented.
-Expected Result: Each host should get approx 5Mbps
+Test: When contention happens, Gold is guaranteed 7Mbps.
+Expected Result: Gold gets a minimum of 7mbps no matter what bronze is doing.
 Author: Omar T. Amer
-Date: 2026.01.18
+Date: 2026.01.30
 """
 
 from logging import Logger
@@ -30,7 +30,7 @@ from src.util import get_final_bw
         ("UDP", 5, 6, 10, None),
     ],
 )
-@pytest.mark.ryu("woowo")
+@pytest.mark.ryu("src/ryu_hardcoded.py")
 def test_70_30_hardcoded_split(
     log: Logger,
     gold: Host,

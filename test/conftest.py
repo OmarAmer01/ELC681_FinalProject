@@ -1,6 +1,7 @@
 
 import json
-import warnings
+import numpy as np
+from numpy.typing import NDArray
 import pytest
 from logging import Logger, getLogger
 from typing import (
@@ -9,7 +10,8 @@ from typing import (
     Optional,
     List,
     Dict,
-    Tuple
+    Tuple,
+    Union,
 )
 from pathlib import Path
 import subprocess
@@ -23,14 +25,14 @@ from mininet.link import TCLink
 from mininet.node import Host
 
 from src.topology import DumbbellTopology_MININET, DumbbellTopology_RYU
-from src.util import PORTS, get_final_bw
+from src.util import PORTS
 from mininet.node import RemoteController, OVSKernelSwitch
 
 
 def pytest_configure(config):
     # register an additional marker
     config.addinivalue_line(
-        "markers", "ryu(path-to-ryu-app): Use the specified Ryu application as the controller instead of the default Mininet controller"
+        "markers", "ryu(path-to-ryu-app, console_out_dir): Use the specified Ryu application as the controller instead of the default Mininet controller"
     )
 
 
@@ -55,12 +57,17 @@ def log() -> Logger:
     return getLogger()
 
 
-def start_ryu(ryu_app_path: Path, port: int = 6767):
+def start_ryu(ryu_app_path: Path, port: int, ryu_console_output: Optional[Path] = None):
     abs_path = ryu_app_path.absolute()
+
+    log = None  # None just means output to console
+    if ryu_console_output is not None:
+        log = open(ryu_console_output, 'w')
+
     proc = subprocess.Popen(
         ["ryu-manager", abs_path, f"--ofp-tcp-listen-port", str(port)],
-        stdout=None,
-        stderr=None,
+        stdout=log,
+        stderr=log,
     )
     return proc
 
@@ -88,11 +95,17 @@ def net(request, log: Logger):
 
     marker = request.node.get_closest_marker('ryu')
     use_ryu = marker is not None
-    ryu_app_path = marker.args[0] if use_ryu and len(marker.args) > 0 else None
+    ryu_app_path = Path(marker.args[0]) if use_ryu and len(
+        marker.args) > 0 else None
+
+    ryu_console_output = Path(marker.args[1]) if use_ryu and len(
+        marker.args) > 1 else None
+
     proc = None
     if use_ryu:
+        assert ryu_app_path is not None
         log.info("Starting network with Ryu controller")
-        proc = start_ryu(Path("src/ryu_hardcoded.py"), 6767)
+        proc = start_ryu(ryu_app_path, 6767, ryu_console_output)
         wait_for_controller('127.0.0.1', 6767)
         log.info("Ryu controller is ready!")
         net = Mininet(
@@ -136,19 +149,25 @@ def iperf3_server(server: Host, log: Logger, mode: Literal["TCP", "UDP"]):
     Start an iperf3 server on the host.
     Works for TCP or UDP. Uses JSON output for parsing.
     """
-    log.info(f"Starting iperf3 {mode} server...")
 
-    cmd = f"iperf3 -s --json -4 -p {PORTS.GOLD.value} &"
-    server.cmd(cmd)
-    log.info(f"[GOLD] iperf3 {mode} server started.")
+    # If we are starting clients from a loop,
+    # we make a race condition happen. I will
+    # aray7 dma8y and start each client on a separate port.
+    def start(port_offset: int = 0):
+        log.info(f"Starting iperf3 {mode} server...")
 
-    cmd = f"iperf3 -s --json -4 -p {PORTS.BRONZE.value} &"
-    server.cmd(cmd)
-    log.info(f"[BRONZE] iperf3 {mode} server started.")
+        cmd = f"iperf3 -s --json -4 -p {PORTS.GOLD.value + port_offset} &"
+        server.cmd(cmd)
+        log.info(f"[GOLD] iperf3 {mode} server started.")
 
-    yield server
+        cmd = f"iperf3 -s --json -4 -p {PORTS.BRONZE.value + port_offset} &"
+        server.cmd(cmd)
+        log.info(f"[BRONZE] iperf3 {mode} server started.")
 
-    server.cmd("pkill iperf3")
+    def stop():
+        server.cmd("pkill iperf3")
+
+    yield start, stop
 
 
 @pytest.fixture
@@ -219,9 +238,45 @@ def plot_competition(request):
 
     plot_title = request.node.name
 
+    def _merge_intervals(iperf_stats_list: List[Dict]) -> Tuple[List[float], List[float]]:
+        """
+        Managing multiple clients in a test means we have to collect
+        multiple iperf_jsons. We merge their data here and obtain a tuple
+        of (time,Mbps) ready to be plotted.
+        """
+        last_time_sample = 0
+        total_time_axis = []
+        total_mbps_axis = []
+        for iperf_stats in iperf_stats_list:
+            # breakpoint()
+            time_axis, mbps_axis = _get_data_points(iperf_stats)
+            total_mbps_axis += mbps_axis
+            # Since we always start at time zero, if we collect data
+            # for 2 seconds with interval of 0.1, the last sent time
+            # is actually 1.9, and the next sample should start at 2.0
+            # thats 1.9 + report_interval
+
+            # Since we start at zero, report interval is at time_axis[1]
+
+            # This will give us some rounding errors due to inconsistent
+            # report times, but we handle this using the ostrich algorithm
+            # More Info: https://en.wikipedia.org/wiki/Ostrich_algorithm
+            if last_time_sample == 0:
+                time_offset = 0
+            else:
+                try:
+                  time_offset = last_time_sample + time_axis[1]
+                except IndexError:
+                  time_offset = last_time_sample
+            total_time_axis += [i + time_offset for i in time_axis]
+            last_time_sample = total_time_axis[-1]
+
+        return (total_time_axis, total_mbps_axis)
+
     def _get_data_points(iperf_stats: Dict) -> Tuple[List[float], List[float]]:
         """
-        Takes the iperf json report and returns tuple of (time, Mbps)
+        Takes the iperf json report and returns tuple of (time, Mbps) ready
+        to be plotted
         """
 
         intervals = iperf_stats["intervals"]
@@ -237,41 +292,72 @@ def plot_competition(request):
 
         return (time_axis, mbps_axis)
 
-    def _save_plot(bronze_stats: Dict, gold_stats: Dict, gold_sla: Optional[float]):
+    def _get_time_axis(arr: NDArray, report_interval: int) -> NDArray:
+        """
+        The time updates at each report interval
+        """
+        return np.arange(0,len(arr), 1) * report_interval
 
-        bronze_data_points = _get_data_points(bronze_stats)
-        gold_data_points = _get_data_points(gold_stats)
 
-        bronze_total_bw = get_final_bw(bronze_stats)
-        gold_total_bw = get_final_bw(gold_stats)
+    def _save_plot(
+        bronze_stats: Union[Dict, List],
+        gold_stats: Union[Dict, List],
+        gold_sla: Optional[float],
+        bronze_requested_bw: Optional[NDArray],
+        gold_requested_bw: Optional[NDArray],
+        report_interval: Optional[int]
+    ):
+        """
+        If the input to our function is a Dict, then this is a single-client experiment.
+        If its a list, then its a multi-client experiment and we have to aggregate their
+        iperf_stats first.
+
+        Also draw the original bandwidths we request if they are available.
+
+        """
+
+        if isinstance(bronze_stats, Dict):
+            assert isinstance(gold_stats, Dict)
+            bronze_data_points = _get_data_points(bronze_stats)
+            gold_data_points = _get_data_points(gold_stats)
+        else:
+            assert isinstance(gold_stats, List)
+            bronze_data_points = _merge_intervals(bronze_stats)
+            gold_data_points = _merge_intervals(gold_stats)
+
+        # bronze_total_bw = get_final_bw(bronze_stats)
+        # gold_total_bw = get_final_bw(gold_stats)
 
         fig, ax = plt.subplots(figsize=(8, 5))
         ax.set_xlabel("Time (s)", fontsize=14)
         ax.set_ylabel("Bandwidth (Mbps)", fontsize=14)
         ax.set_title(plot_title)
 
-        # ax.yaxis.set_major_locator(MultipleLocator(5))
-        # ax.yaxis.set_minor_locator(MultipleLocator(1))
-        # ax.tick_params(axis="y", which="minor", length=4)
-
         ax.plot(*bronze_data_points, label="Bronze")
         ax.plot(*gold_data_points, label="Gold")
 
-        ax.axhline(y=bronze_total_bw, linestyle=":", linewidth=2,
-                   label="Bronze Total Bandwidth", color="tab:red")
-        ax.axhline(y=gold_total_bw, linestyle=":", linewidth=2,
-                   label="Gold Total Bandwidth", color="tab:green")
+        if bronze_requested_bw is not None:
+            assert report_interval is not None
+            assert gold_requested_bw is not None
 
-        # yticks = list(ax.get_yticks())
-        # yticks.extend([bronze_total_bw, gold_total_bw])
+            if (bronze_requested_bw == 0).all():
+                bronze_requested_bw = np.ones(len(bronze_requested_bw)) * 10
+
+            if (gold_requested_bw == 0).all():
+                gold_requested_bw = np.ones(len(gold_requested_bw)) * 10
+
+
+            ax.plot(_get_time_axis(bronze_requested_bw, report_interval),bronze_requested_bw, label="Bronze Requested BW", color="tab:purple")
+            ax.plot(_get_time_axis(gold_requested_bw, report_interval),gold_requested_bw, label="Gold Requested BW", color="tab:pink")
+
+        # ax.axhline(y=bronze_total_bw, linestyle=":", linewidth=2,
+        #            label="Bronze Total Bandwidth", color="tab:red")
+        # ax.axhline(y=gold_total_bw, linestyle=":", linewidth=2,
+        #            label="Gold Total Bandwidth", color="tab:green")
+
         if gold_sla is not None:
             ax.axhline(y=gold_sla, linestyle="-.", linewidth=2,
                        label="Gold SLA", color="tab:green")
-            # yticks.extend([gold_sla])
-
-        # yticks = sorted(set(yticks))
-        # ax.set_yticks(yticks)
-
         plt.legend()
 
         plt.savefig(f"figs/{plot_title}.svg", format="svg")

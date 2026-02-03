@@ -13,6 +13,7 @@ import time
 import subprocess
 import pickle
 from collections import deque
+import statistics
 
 from sklearn.linear_model import LinearRegression
 from ryu.base import app_manager
@@ -43,6 +44,11 @@ class LinearRegressionQoS(app_manager.RyuApp):
 
         self.GOLD_SLA = int(7e6)
         self.last_ten_gold_bw = deque(maxlen=10)
+
+        # Linear regression alone causes my model
+        # to diverge. Lets try smoothing.
+        self.last_pred = deque(maxlen=5)
+
         self.prev_timestamp = -1
         self.prev_gold_tx_bytes = -1
 
@@ -63,13 +69,17 @@ class LinearRegressionQoS(app_manager.RyuApp):
         if len(self.last_ten_gold_bw) < 10:
             # If we are unable to predict,
             # give gold the maximum anyway
-            return self.GOLD_SLA / 1e6
+            pred = self.GOLD_SLA / 1e6
+            self.last_pred.append(pred)
+            return statistics.mean(self.last_pred)
 
         samples = np.array(self.last_ten_gold_bw).reshape(1, -1)
         model_prediction = self.model.predict(samples)[0]
+        pred = np.clip(model_prediction, a_min=0.1, a_max=10)
+        self.last_pred.append(pred)
 
         # To iperf, zero bandwidth means maximum.
-        return np.clip(model_prediction, a_min=0.1, a_max=10)
+        return statistics.mean(self.last_pred)
 
     def get_current_gold_bw(self) -> float:
         """
@@ -147,7 +157,7 @@ class LinearRegressionQoS(app_manager.RyuApp):
                 return
 
             # Update gold queue using UUID
-            cmd_gold = f"sudo ovs-vsctl set queue {self.gold_queue_uuid} other-config:min-rate={int(gold_bw)} other-config:max-rate={10e6}"
+            cmd_gold = f"sudo ovs-vsctl set queue {self.gold_queue_uuid} other-config:min-rate={int(gold_bw)} other-config:max-rate={int(gold_bw)}"
 
             result = subprocess.run(
                 cmd_gold, shell=True, capture_output=True, text=True)
@@ -177,17 +187,20 @@ class LinearRegressionQoS(app_manager.RyuApp):
             # Fill the sliding window
             self.get_current_gold_bw()
             prediction = self.predict_gold_bw()
+            gold_allocation = prediction
+            if len(self.last_ten_gold_bw) == 10:
+              gold_allocation = max(self.last_ten_gold_bw[-1], prediction) # Max of prediction / current bandwidth
 
             self.update_qos_queues(
-                gold_bw=1e6 * prediction, # Gold gets what we think it needs
-                bronze_bw=1e6 * (10 - prediction), # Bronze takes whats left.
+                gold_bw=1e6 * gold_allocation, # Gold gets what we think it needs
+                bronze_bw=1e6 * (10 - gold_allocation), # Bronze takes whats left.
             )
 
-            print([f"{i:.2f}" for i in self.last_ten_gold_bw])
-            print(f"Prediction: {prediction:.2f} Mbps")
-            print("=====================================")
-
+            self.logger.info(" ".join([f"{i:.2f}" for i in self.last_ten_gold_bw]))
+            self.logger.info(f"Prediction: {prediction:.2f} Mbps")
+            self.logger.info("=====================================")
             time.sleep(1)
+
 
     def cache_queue_uuids(self):
         """
@@ -373,7 +386,7 @@ class LinearRegressionQoS(app_manager.RyuApp):
         # at which they were created so the slow switch
         # takes ID 1 and the other switch takes ID 2
         self.connected_switches.add(switch_id)
-        print(f"Switch {datapath.id} connected!")
+        # print(f"Switch {datapath.id} connected!")
 
         if len(self.connected_switches) == 2:
             # Now we can start monitoring
