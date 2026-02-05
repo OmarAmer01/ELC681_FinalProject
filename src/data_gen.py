@@ -33,7 +33,8 @@ def generate_ar1_traffic(
     mean_mbps: float,
     variance: float,
     phi: float,
-    duration_sec: int
+    duration_sec: int,
+    seed
 ):
     """
     Generates a realistic traffic series.
@@ -42,6 +43,8 @@ def generate_ar1_traffic(
     variance: How much the traffic 'bursts'
     phi: Correlation (0.8 to 0.99 for realistic steady flows)
     """
+    if seed is not None:
+      np.random.seed(seed)
     n_steps = duration_sec
     samples = np.zeros(n_steps)
     c = mean_mbps * (1 - phi)

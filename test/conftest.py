@@ -17,6 +17,7 @@ from pathlib import Path
 import subprocess
 import socket
 import time
+import random
 
 import matplotlib.pyplot as plt
 from mininet.clean import cleanup
@@ -35,6 +36,12 @@ def pytest_configure(config):
         "markers", "ryu(path-to-ryu-app, console_out_dir): Use the specified Ryu application as the controller instead of the default Mininet controller"
     )
 
+@pytest.fixture(scope="session", autouse=True)
+def seed():
+    SEED = 67
+    random.seed(SEED)
+    np.random.seed(67)
+    yield
 
 @pytest.fixture(scope="module", autouse=True)
 def mininet_cleanup(log: Logger):
@@ -229,6 +236,69 @@ def collect_iperf3(log: Logger):
     return _collect
 
 
+def merge_intervals(iperf_stats_list: List[Dict]) -> Tuple[List[float], List[float]]:
+    """
+    Managing multiple clients in a test means we have to collect
+    multiple iperf_jsons. We merge their data here and obtain a tuple
+    of (time,Mbps) ready to be plotted.
+    """
+    last_time_sample = 0
+    total_time_axis = []
+    total_mbps_axis = []
+    for iperf_stats in iperf_stats_list:
+        # breakpoint()
+        time_axis, mbps_axis = get_data_points(iperf_stats)
+        total_mbps_axis += mbps_axis
+        # Since we always start at time zero, if we collect data
+        # for 2 seconds with interval of 0.1, the last sent time
+        # is actually 1.9, and the next sample should start at 2.0
+        # thats 1.9 + report_interval
+
+        # Since we start at zero, report interval is at time_axis[1]
+
+        # This will give us some rounding errors due to inconsistent
+        # report times, but we handle this using the ostrich algorithm
+        # More Info: https://en.wikipedia.org/wiki/Ostrich_algorithm
+        if last_time_sample == 0:
+            time_offset = 0
+        else:
+            try:
+                time_offset = last_time_sample + time_axis[1]
+            except IndexError:
+                time_offset = last_time_sample
+        total_time_axis += [i + time_offset for i in time_axis]
+        last_time_sample = total_time_axis[-1]
+
+    return (total_time_axis, total_mbps_axis)
+
+
+def get_data_points(iperf_stats: Dict) -> Tuple[List[float], List[float]]:
+    """
+    Takes the iperf json report and returns tuple of (time, Mbps) ready
+    to be plotted
+    """
+
+    intervals = iperf_stats["intervals"]
+    time_axis: List[float] = []
+    mbps_axis: List[float] = []
+    for interval in intervals:
+        aggregate = interval["sum"]
+        start_time = aggregate["start"]
+        mbps = aggregate["bits_per_second"] / 1e6
+
+        time_axis.append(start_time)
+        mbps_axis.append(mbps)
+
+    return (time_axis, mbps_axis)
+
+
+def get_time_axis(arr: NDArray, report_interval: int) -> NDArray:
+    """
+    The time updates at each report interval
+    """
+    return np.arange(0, len(arr), 1) * report_interval
+
+
 @pytest.fixture
 def plot_competition(request):
     """
@@ -237,67 +307,6 @@ def plot_competition(request):
     """
 
     plot_title = request.node.name
-
-    def _merge_intervals(iperf_stats_list: List[Dict]) -> Tuple[List[float], List[float]]:
-        """
-        Managing multiple clients in a test means we have to collect
-        multiple iperf_jsons. We merge their data here and obtain a tuple
-        of (time,Mbps) ready to be plotted.
-        """
-        last_time_sample = 0
-        total_time_axis = []
-        total_mbps_axis = []
-        for iperf_stats in iperf_stats_list:
-            # breakpoint()
-            time_axis, mbps_axis = _get_data_points(iperf_stats)
-            total_mbps_axis += mbps_axis
-            # Since we always start at time zero, if we collect data
-            # for 2 seconds with interval of 0.1, the last sent time
-            # is actually 1.9, and the next sample should start at 2.0
-            # thats 1.9 + report_interval
-
-            # Since we start at zero, report interval is at time_axis[1]
-
-            # This will give us some rounding errors due to inconsistent
-            # report times, but we handle this using the ostrich algorithm
-            # More Info: https://en.wikipedia.org/wiki/Ostrich_algorithm
-            if last_time_sample == 0:
-                time_offset = 0
-            else:
-                try:
-                  time_offset = last_time_sample + time_axis[1]
-                except IndexError:
-                  time_offset = last_time_sample
-            total_time_axis += [i + time_offset for i in time_axis]
-            last_time_sample = total_time_axis[-1]
-
-        return (total_time_axis, total_mbps_axis)
-
-    def _get_data_points(iperf_stats: Dict) -> Tuple[List[float], List[float]]:
-        """
-        Takes the iperf json report and returns tuple of (time, Mbps) ready
-        to be plotted
-        """
-
-        intervals = iperf_stats["intervals"]
-        time_axis: List[float] = []
-        mbps_axis: List[float] = []
-        for interval in intervals:
-            aggregate = interval["sum"]
-            start_time = aggregate["start"]
-            mbps = aggregate["bits_per_second"] / 1e6
-
-            time_axis.append(start_time)
-            mbps_axis.append(mbps)
-
-        return (time_axis, mbps_axis)
-
-    def _get_time_axis(arr: NDArray, report_interval: int) -> NDArray:
-        """
-        The time updates at each report interval
-        """
-        return np.arange(0,len(arr), 1) * report_interval
-
 
     def _save_plot(
         bronze_stats: Union[Dict, List],
@@ -318,12 +327,12 @@ def plot_competition(request):
 
         if isinstance(bronze_stats, Dict):
             assert isinstance(gold_stats, Dict)
-            bronze_data_points = _get_data_points(bronze_stats)
-            gold_data_points = _get_data_points(gold_stats)
+            bronze_data_points = get_data_points(bronze_stats)
+            gold_data_points = get_data_points(gold_stats)
         else:
             assert isinstance(gold_stats, List)
-            bronze_data_points = _merge_intervals(bronze_stats)
-            gold_data_points = _merge_intervals(gold_stats)
+            bronze_data_points = merge_intervals(bronze_stats)
+            gold_data_points = merge_intervals(gold_stats)
 
         # bronze_total_bw = get_final_bw(bronze_stats)
         # gold_total_bw = get_final_bw(gold_stats)
@@ -346,9 +355,10 @@ def plot_competition(request):
             if (gold_requested_bw == 0).all():
                 gold_requested_bw = np.ones(len(gold_requested_bw)) * 10
 
-
-            ax.plot(_get_time_axis(bronze_requested_bw, report_interval),bronze_requested_bw, label="Bronze Requested BW", color="tab:purple")
-            ax.plot(_get_time_axis(gold_requested_bw, report_interval),gold_requested_bw, label="Gold Requested BW", color="tab:pink")
+            ax.plot(get_time_axis(bronze_requested_bw, report_interval),
+                    bronze_requested_bw, label="Bronze Requested BW", color="tab:purple")
+            ax.plot(get_time_axis(gold_requested_bw, report_interval),
+                    gold_requested_bw, label="Gold Requested BW", color="tab:pink")
 
         # ax.axhline(y=bronze_total_bw, linestyle=":", linewidth=2,
         #            label="Bronze Total Bandwidth", color="tab:red")
@@ -364,17 +374,40 @@ def plot_competition(request):
 
     return _save_plot
 
+@pytest.fixture
+def check_bw_ai(request):
+    test_name: str = request.node.name
+    assert "ai" in test_name.lower(), "Test mode is not AI."
+
+    def _check_bw(
+        requested_bronze: NDArray,
+        requested_gold: NDArray,
+        bronze_iperf_stats,
+        gold_iperf_stats,
+        bw_change_interval
+    ):
+        # Take every 10th element (report interval is a nice fixed 0.1 secs)
+        bronze_actual_bw = merge_intervals(bronze_iperf_stats)[1][::10]
+        gold_actual_bw = merge_intervals(gold_iperf_stats)[1][::10]
+        # breakpoint()
+        print(requested_bronze)
+        print(bronze_actual_bw)
+
+        print(requested_gold)
+        print(gold_actual_bw)
+
+        # Check 1: Gold drops below its SLA
+        # only if it wishes to.
+
+
+
+    return _check_bw
+
 
 @pytest.fixture
 def check_bw(request):
     test_name = request.node.name
     test_mode: Literal["BEST_EFFORT", "70-30", "AI"]
-    if 'best_effort' in test_name:
-        test_mode = "BEST_EFFORT"
-    elif '70' in test_name:
-        test_mode = "70-30"
-    else:
-        test_mode = "AI"
 
     def _check_bw(
         requested_gold_bw: float,
@@ -396,7 +429,6 @@ def check_bw(request):
             # using the maximum allowed rate.
             if test_mode == "BEST_EFFORT":
                 gold_bw = bronze_bw = bottleneck / 2
-                # return (5, 5)
             elif test_mode == "70-30":
                 gold_bw = bottleneck * 0.7
                 bronze_bw = bottleneck * 0.3
@@ -427,4 +459,13 @@ def check_bw(request):
                     return (requested_gold_bw * scale, requested_bronze_bw * scale)
                 elif test_mode == "70-30":
                     return (bottleneck * 0.7, bottleneck * 0.3)
-    return _check_bw
+
+    if 'best_effort' in test_name:
+        test_mode = "BEST_EFFORT"
+        return _check_bw
+    elif '70' in test_name:
+        test_mode = "70-30"
+        return _check_bw
+    else:
+        test_mode = "AI"
+        raise NotImplementedError("Please use check_bw_ai() instead.")

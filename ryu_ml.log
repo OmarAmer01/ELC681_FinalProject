@@ -2,172 +2,328 @@ loading app /home/mininet/project/src/ryu_ml.py
 loading app ryu.controller.ofp_handler
 instantiating app /home/mininet/project/src/ryu_ml.py of LinearRegressionQoS
 instantiating app ryu.controller.ofp_handler of OFPHandler
-570c2d83-033a-4354-b810-c95e696dfb7f
-1317cd40-3268-4002-a895-28c254407286
-1ced4a16-8de6-4acf-8c1e-c6df3c8930f2
-Cached queue UUIDs - Gold: 1317cd40-3268-4002-a895-28c254407286, Bronze: 1ced4a16-8de6-4acf-8c1e-c6df3c8930f2
+5c64ac6f-6eae-475a-ad9c-4076ced37f98
+bee50f0e-04b9-48a3-8fde-a7f2f52a8ad8
+847862a8-6eb6-4ce3-8b75-555cdbbfea05
+Cached queue UUIDs - Gold: bee50f0e-04b9-48a3-8fde-a7f2f52a8ad8, Bronze: 847862a8-6eb6-4ce3-8b75-555cdbbfea05
 Started dynamic QoS monitoring
-QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
 
-Prediction: 7.00 Mbps
+
+TIMESTEP: 0
+[SYSTEM WARMUP] Iterations remaining: 10
+TIMESTEP: 1
+[SYSTEM WARMUP] Iterations remaining: 9
+TIMESTEP: 2
+[SYSTEM WARMUP] Iterations remaining: 8
+TIMESTEP: 3
+[SYSTEM WARMUP] Iterations remaining: 7
+TIMESTEP: 4
+[SYSTEM WARMUP] Iterations remaining: 6
+TIMESTEP: 5
+[SYSTEM WARMUP] Iterations remaining: 5
+TIMESTEP: 6
+[SYSTEM WARMUP] Iterations remaining: 4
+TIMESTEP: 7
+[SYSTEM WARMUP] Iterations remaining: 3
+TIMESTEP: 8
+[SYSTEM WARMUP] Iterations remaining: 2
+TIMESTEP: 9
+[SYSTEM WARMUP] Iterations remaining: 1
+TIMESTEP: 10
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 7.38 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+8.58 6.71 6.15 6.94 6.03 6.96 5.75 6.99 5.47 7.30
 =====================================
-QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
-6.71
-Prediction: 7.00 Mbps
+
+
+TIMESTEP: 11
+Prediction: 6.72 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+6.71 6.15 6.94 6.03 6.96 5.75 6.99 5.47 7.30 6.54
 =====================================
-QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
-6.71 6.47
-Prediction: 7.00 Mbps
+
+
+TIMESTEP: 12
+Prediction: 6.63 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+6.15 6.94 6.03 6.96 5.75 6.99 5.47 7.30 6.54 6.28
 =====================================
-QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
-6.71 6.47 6.88
-Prediction: 7.00 Mbps
+
+
+TIMESTEP: 13
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 6.16Mbps, Bronze: 3.84Mbps
+Prediction: 6.16 Mbps
+GOLD ALLOCATION: 6.16 Mbps
+BRONZE ALLOCATION: 3.84 Mbps
+6.94 6.03 6.96 5.75 6.99 5.47 7.30 6.54 6.28 5.11
 =====================================
-QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
-6.71 6.47 6.88 6.13
-Prediction: 7.00 Mbps
+
+
+TIMESTEP: 14
+Prediction: 6.33 Mbps
+GOLD ALLOCATION: 6.16 Mbps
+BRONZE ALLOCATION: 3.84 Mbps
+6.03 6.96 5.75 6.99 5.47 7.30 6.54 6.28 5.11 6.83
 =====================================
-QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
-6.71 6.47 6.88 6.13 7.00
-Prediction: 7.00 Mbps
+
+
+TIMESTEP: 15
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 5.83Mbps, Bronze: 4.17Mbps
+Prediction: 5.83 Mbps
+GOLD ALLOCATION: 5.83 Mbps
+BRONZE ALLOCATION: 4.17 Mbps
+6.96 5.75 6.99 5.47 7.30 6.54 6.28 5.11 6.83 5.32
 =====================================
-QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
-6.71 6.47 6.88 6.13 7.00 6.81
-Prediction: 7.00 Mbps
+
+
+TIMESTEP: 16
+Prediction: 5.88 Mbps
+GOLD ALLOCATION: 5.83 Mbps
+BRONZE ALLOCATION: 4.17 Mbps
+5.75 6.99 5.47 7.30 6.54 6.28 5.11 6.83 5.32 6.07
 =====================================
-QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
-6.71 6.47 6.88 6.13 7.00 6.81 6.99
-Prediction: 7.00 Mbps
+
+
+TIMESTEP: 17
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 5.50Mbps, Bronze: 4.50Mbps
+Prediction: 5.50 Mbps
+GOLD ALLOCATION: 5.50 Mbps
+BRONZE ALLOCATION: 4.50 Mbps
+6.99 5.47 7.30 6.54 6.28 5.11 6.83 5.32 6.07 4.91
 =====================================
-QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
-6.71 6.47 6.88 6.13 7.00 6.81 6.99 6.74
-Prediction: 7.00 Mbps
-=====================================
-QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
-6.71 6.47 6.88 6.13 7.00 6.81 6.99 6.74 6.92
-Prediction: 7.00 Mbps
-=====================================
-QoS updated - Gold: 6.90Mbps, Bronze: 3.10Mbps
-6.71 6.47 6.88 6.13 7.00 6.81 6.99 6.74 6.92 6.77
-Prediction: 6.90 Mbps
-=====================================
-QoS updated - Gold: 6.89Mbps, Bronze: 3.11Mbps
-6.47 6.88 6.13 7.00 6.81 6.99 6.74 6.92 6.77 6.89
-Prediction: 6.86 Mbps
-=====================================
-QoS updated - Gold: 6.74Mbps, Bronze: 3.26Mbps
-6.88 6.13 7.00 6.81 6.99 6.74 6.92 6.77 6.89 6.63
-Prediction: 6.74 Mbps
-=====================================
-QoS updated - Gold: 6.86Mbps, Bronze: 3.14Mbps
-6.13 7.00 6.81 6.99 6.74 6.92 6.77 6.89 6.63 6.86
-Prediction: 6.69 Mbps
-=====================================
-QoS updated - Gold: 6.55Mbps, Bronze: 3.45Mbps
-7.00 6.81 6.99 6.74 6.92 6.77 6.89 6.63 6.86 6.53
-Prediction: 6.55 Mbps
-=====================================
-QoS updated - Gold: 6.55Mbps, Bronze: 3.45Mbps
-6.81 6.99 6.74 6.92 6.77 6.89 6.63 6.86 6.53 6.55
-Prediction: 6.55 Mbps
-=====================================
-QoS updated - Gold: 6.32Mbps, Bronze: 3.68Mbps
-6.99 6.74 6.92 6.77 6.89 6.63 6.86 6.53 6.55 5.83
-Prediction: 6.32 Mbps
-=====================================
-QoS updated - Gold: 6.43Mbps, Bronze: 3.57Mbps
-6.74 6.92 6.77 6.89 6.63 6.86 6.53 6.55 5.83 6.43
-Prediction: 6.31 Mbps
-=====================================
-QoS updated - Gold: 6.03Mbps, Bronze: 3.97Mbps
-6.92 6.77 6.89 6.63 6.86 6.53 6.55 5.83 6.43 5.51
-Prediction: 6.03 Mbps
-=====================================
-QoS updated - Gold: 6.32Mbps, Bronze: 3.68Mbps
-6.77 6.89 6.63 6.86 6.53 6.55 5.83 6.43 5.51 6.32
-Prediction: 6.03 Mbps
-=====================================
-QoS updated - Gold: 5.76Mbps, Bronze: 4.24Mbps
-6.89 6.63 6.86 6.53 6.55 5.83 6.43 5.51 6.32 5.34
+
+
+TIMESTEP: 18
 Prediction: 5.76 Mbps
+GOLD ALLOCATION: 5.50 Mbps
+BRONZE ALLOCATION: 4.50 Mbps
+5.47 7.30 6.54 6.28 5.11 6.83 5.32 6.07 4.91 5.80
 =====================================
-QoS updated - Gold: 6.21Mbps, Bronze: 3.79Mbps
-6.63 6.86 6.53 6.55 5.83 6.43 5.51 6.32 5.34 6.21
-Prediction: 5.89 Mbps
+
+
+TIMESTEP: 19
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 5.20Mbps, Bronze: 4.80Mbps
+Prediction: 5.20 Mbps
+GOLD ALLOCATION: 5.20 Mbps
+BRONZE ALLOCATION: 4.80 Mbps
+7.30 6.54 6.28 5.11 6.83 5.32 6.07 4.91 5.80 4.54
 =====================================
-QoS updated - Gold: 5.99Mbps, Bronze: 4.01Mbps
-6.86 6.53 6.55 5.83 6.43 5.51 6.32 5.34 6.21 5.99
-Prediction: 5.75 Mbps
+
+
+TIMESTEP: 20
+Prediction: 5.41 Mbps
+GOLD ALLOCATION: 5.20 Mbps
+BRONZE ALLOCATION: 4.80 Mbps
+6.54 6.28 5.11 6.83 5.32 6.07 4.91 5.80 4.54 5.71
 =====================================
-QoS updated - Gold: 6.00Mbps, Bronze: 4.00Mbps
-6.53 6.55 5.83 6.43 5.51 6.32 5.34 6.21 5.99 6.00
-Prediction: 5.90 Mbps
+
+
+TIMESTEP: 21
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 5.02Mbps, Bronze: 4.98Mbps
+Prediction: 5.02 Mbps
+GOLD ALLOCATION: 5.02 Mbps
+BRONZE ALLOCATION: 4.98 Mbps
+6.28 5.11 6.83 5.32 6.07 4.91 5.80 4.54 5.71 4.68
 =====================================
-QoS updated - Gold: 5.90Mbps, Bronze: 4.10Mbps
-6.55 5.83 6.43 5.51 6.32 5.34 6.21 5.99 6.00 5.90
-Prediction: 5.76 Mbps
-=====================================
-QoS updated - Gold: 5.92Mbps, Bronze: 4.08Mbps
-5.83 6.43 5.51 6.32 5.34 6.21 5.99 6.00 5.90 5.86
-Prediction: 5.92 Mbps
-=====================================
-QoS updated - Gold: 5.76Mbps, Bronze: 4.24Mbps
-6.43 5.51 6.32 5.34 6.21 5.99 6.00 5.90 5.86 5.71
-Prediction: 5.76 Mbps
-=====================================
-QoS updated - Gold: 5.76Mbps, Bronze: 4.24Mbps
-5.51 6.32 5.34 6.21 5.99 6.00 5.90 5.86 5.71 5.69
-Prediction: 5.76 Mbps
-=====================================
-QoS updated - Gold: 5.69Mbps, Bronze: 4.31Mbps
-6.32 5.34 6.21 5.99 6.00 5.90 5.86 5.71 5.69 5.69
-Prediction: 5.66 Mbps
-=====================================
-QoS updated - Gold: 5.63Mbps, Bronze: 4.37Mbps
-5.34 6.21 5.99 6.00 5.90 5.86 5.71 5.69 5.69 5.51
-Prediction: 5.63 Mbps
-=====================================
-QoS updated - Gold: 5.64Mbps, Bronze: 4.36Mbps
-6.21 5.99 6.00 5.90 5.86 5.71 5.69 5.69 5.51 5.64
-Prediction: 5.55 Mbps
-=====================================
-QoS updated - Gold: 5.52Mbps, Bronze: 4.48Mbps
-5.99 6.00 5.90 5.86 5.71 5.69 5.69 5.51 5.64 5.39
-Prediction: 5.52 Mbps
-=====================================
-QoS updated - Gold: 5.47Mbps, Bronze: 4.53Mbps
-6.00 5.90 5.86 5.71 5.69 5.69 5.51 5.64 5.39 5.47
-Prediction: 5.46 Mbps
-=====================================
-QoS updated - Gold: 5.39Mbps, Bronze: 4.61Mbps
-5.90 5.86 5.71 5.69 5.69 5.51 5.64 5.39 5.47 5.24
-Prediction: 5.39 Mbps
-=====================================
-QoS updated - Gold: 5.39Mbps, Bronze: 4.61Mbps
-5.86 5.71 5.69 5.69 5.51 5.64 5.39 5.47 5.24 5.39
-Prediction: 5.37 Mbps
-=====================================
-QoS updated - Gold: 5.28Mbps, Bronze: 4.72Mbps
-5.71 5.69 5.69 5.51 5.64 5.39 5.47 5.24 5.39 5.24
-Prediction: 5.28 Mbps
-=====================================
-QoS updated - Gold: 5.29Mbps, Bronze: 4.71Mbps
-5.69 5.69 5.51 5.64 5.39 5.47 5.24 5.39 5.24 5.29
-Prediction: 5.28 Mbps
-=====================================
-QoS updated - Gold: 5.22Mbps, Bronze: 4.78Mbps
-5.69 5.51 5.64 5.39 5.47 5.24 5.39 5.24 5.29 5.22
-Prediction: 5.22 Mbps
-=====================================
-QoS updated - Gold: 5.22Mbps, Bronze: 4.78Mbps
-5.51 5.64 5.39 5.47 5.24 5.39 5.24 5.29 5.22 5.17
-Prediction: 5.22 Mbps
-=====================================
-QoS updated - Gold: 5.19Mbps, Bronze: 4.81Mbps
-5.64 5.39 5.47 5.24 5.39 5.24 5.29 5.22 5.17 5.19
+
+
+TIMESTEP: 22
 Prediction: 5.17 Mbps
+GOLD ALLOCATION: 5.02 Mbps
+BRONZE ALLOCATION: 4.98 Mbps
+5.11 6.83 5.32 6.07 4.91 5.80 4.54 5.71 4.68 5.03
 =====================================
-QoS updated - Gold: 5.19Mbps, Bronze: 4.81Mbps
-5.39 5.47 5.24 5.39 5.24 5.29 5.22 5.17 5.19 5.19
-Prediction: 5.17 Mbps
+
+
+TIMESTEP: 23
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.90Mbps, Bronze: 5.10Mbps
+Prediction: 4.90 Mbps
+GOLD ALLOCATION: 4.90 Mbps
+BRONZE ALLOCATION: 5.10 Mbps
+6.83 5.32 6.07 4.91 5.80 4.54 5.71 4.68 5.03 4.98
 =====================================
+
+
+TIMESTEP: 24
+Prediction: 4.98 Mbps
+GOLD ALLOCATION: 4.90 Mbps
+BRONZE ALLOCATION: 5.10 Mbps
+5.32 6.07 4.91 5.80 4.54 5.71 4.68 5.03 4.98 4.35
+=====================================
+
+
+TIMESTEP: 25
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.72Mbps, Bronze: 5.28Mbps
+Prediction: 4.72 Mbps
+GOLD ALLOCATION: 4.72 Mbps
+BRONZE ALLOCATION: 5.28 Mbps
+6.07 4.91 5.80 4.54 5.71 4.68 5.03 4.98 4.35 4.86
+=====================================
+
+
+TIMESTEP: 26
+Prediction: 4.75 Mbps
+GOLD ALLOCATION: 4.72 Mbps
+BRONZE ALLOCATION: 5.28 Mbps
+4.91 5.80 4.54 5.71 4.68 5.03 4.98 4.35 4.86 4.37
+=====================================
+
+
+TIMESTEP: 27
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.62Mbps, Bronze: 5.38Mbps
+Prediction: 4.62 Mbps
+GOLD ALLOCATION: 4.62 Mbps
+BRONZE ALLOCATION: 5.38 Mbps
+5.80 4.54 5.71 4.68 5.03 4.98 4.35 4.86 4.37 4.71
+=====================================
+
+
+TIMESTEP: 28
+Prediction: 4.53 Mbps
+GOLD ALLOCATION: 4.62 Mbps
+BRONZE ALLOCATION: 5.38 Mbps
+4.54 5.71 4.68 5.03 4.98 4.35 4.86 4.37 4.71 4.22
+=====================================
+
+
+TIMESTEP: 29
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.55Mbps, Bronze: 5.45Mbps
+Prediction: 4.55 Mbps
+GOLD ALLOCATION: 4.55 Mbps
+BRONZE ALLOCATION: 5.45 Mbps
+5.71 4.68 5.03 4.98 4.35 4.86 4.37 4.71 4.22 4.62
+=====================================
+
+
+TIMESTEP: 30
+Prediction: 4.39 Mbps
+GOLD ALLOCATION: 4.55 Mbps
+BRONZE ALLOCATION: 5.45 Mbps
+4.68 5.03 4.98 4.35 4.86 4.37 4.71 4.22 4.62 3.94
+=====================================
+
+
+TIMESTEP: 31
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.47Mbps, Bronze: 5.53Mbps
+Prediction: 4.47 Mbps
+GOLD ALLOCATION: 4.47 Mbps
+BRONZE ALLOCATION: 5.53 Mbps
+5.03 4.98 4.35 4.86 4.37 4.71 4.22 4.62 3.94 4.74
+=====================================
+
+
+TIMESTEP: 32
+Prediction: 4.35 Mbps
+GOLD ALLOCATION: 4.47 Mbps
+BRONZE ALLOCATION: 5.53 Mbps
+4.98 4.35 4.86 4.37 4.71 4.22 4.62 3.94 4.74 4.19
+=====================================
+
+
+TIMESTEP: 33
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.41Mbps, Bronze: 5.59Mbps
+Prediction: 4.41 Mbps
+GOLD ALLOCATION: 4.41 Mbps
+BRONZE ALLOCATION: 5.59 Mbps
+4.35 4.86 4.37 4.71 4.22 4.62 3.94 4.74 4.19 4.33
+=====================================
+
+
+TIMESTEP: 34
+Prediction: 4.33 Mbps
+GOLD ALLOCATION: 4.41 Mbps
+BRONZE ALLOCATION: 5.59 Mbps
+4.86 4.37 4.71 4.22 4.62 3.94 4.74 4.19 4.33 4.46
+=====================================
+
+
+TIMESTEP: 35
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.43Mbps, Bronze: 5.57Mbps
+Prediction: 4.43 Mbps
+GOLD ALLOCATION: 4.43 Mbps
+BRONZE ALLOCATION: 5.57 Mbps
+4.37 4.71 4.22 4.62 3.94 4.74 4.19 4.33 4.46 4.20
+=====================================
+
+
+TIMESTEP: 36
+Prediction: 4.32 Mbps
+GOLD ALLOCATION: 4.43 Mbps
+BRONZE ALLOCATION: 5.57 Mbps
+4.71 4.22 4.62 3.94 4.74 4.19 4.33 4.46 4.20 4.39
+=====================================
+
+
+TIMESTEP: 37
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.33Mbps, Bronze: 5.67Mbps
+Prediction: 4.33 Mbps
+GOLD ALLOCATION: 4.33 Mbps
+BRONZE ALLOCATION: 5.67 Mbps
+4.22 4.62 3.94 4.74 4.19 4.33 4.46 4.20 4.39 4.01
+=====================================
+
+
+TIMESTEP: 38
+Prediction: 4.31 Mbps
+GOLD ALLOCATION: 4.33 Mbps
+BRONZE ALLOCATION: 5.67 Mbps
+4.62 3.94 4.74 4.19 4.33 4.46 4.20 4.39 4.01 4.44
+=====================================
+
+
+TIMESTEP: 39
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.16Mbps, Bronze: 5.84Mbps
+Prediction: 4.16 Mbps
+GOLD ALLOCATION: 4.16 Mbps
+BRONZE ALLOCATION: 5.84 Mbps
+3.94 4.74 4.19 4.33 4.46 4.20 4.39 4.01 4.44 3.55
+=====================================
+
+
+TIMESTEP: 40
+Prediction: 4.25 Mbps
+GOLD ALLOCATION: 4.16 Mbps
+BRONZE ALLOCATION: 5.84 Mbps
+4.74 4.19 4.33 4.46 4.20 4.39 4.01 4.44 3.55 4.68
+=====================================
+
+
+TIMESTEP: 41
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.00Mbps, Bronze: 6.00Mbps
+Prediction: 4.00 Mbps
+GOLD ALLOCATION: 4.00 Mbps
+BRONZE ALLOCATION: 6.00 Mbps
+4.19 4.33 4.46 4.20 4.39 4.01 4.44 3.55 4.68 3.15
+=====================================
+
+
+TIMESTEP: 42
+Prediction: 3.86 Mbps
+GOLD ALLOCATION: 4.00 Mbps
+BRONZE ALLOCATION: 6.00 Mbps
+4.33 4.46 4.20 4.39 4.01 4.44 3.55 4.68 3.15 3.09
+=====================================
+
+
+TIMESTEP: 43
+GOLD IS GOING QUIET

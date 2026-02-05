@@ -5,8 +5,10 @@ Author: Omar T. Amer
 Date: 2026.02.03
 """
 
+import random
 from logging import Logger
 from math import isclose
+import time
 
 import pytest
 from mininet.node import Host
@@ -20,11 +22,10 @@ from src.data_gen import generate_ar1_traffic
 @pytest.mark.parametrize(
     "mode, gold_bandwidth, bronze_bandwidth, timeout, parallel, bw_change_interval",
     [
-        ("UDP", generate_ar1_traffic(8, 0.1, 0.9, 20), generate_ar1_traffic(5, 3, 0.9, 20), 20, None, 2),
+        ("UDP", generate_ar1_traffic(8, 3, 0.9, 20,None), generate_ar1_traffic(8, 3, 0.9, 20, None), 20, None, 2),
     ],
 )
 @pytest.mark.ryu("src/ryu_ml.py", "ryu_ml.log")
-# @pytest.mark.ryu("src/ryu_hardcoded.py", "ryu_ml.log")
 def test_ai(
     log: Logger,
     gold: Host,
@@ -40,6 +41,7 @@ def test_ai(
     mode,
     plot_competition,
     bw_change_interval,
+    check_bw_ai,
 ):
     if bronze_bandwidth is None:
         bronze_bandwidth = np.zeros(timeout)
@@ -80,6 +82,7 @@ def test_ai(
         log.info(f"[{idx}] [BRONZE]: ACTUAL: {bronze_actual_bw:.3f} | REQUESTED: {bronze_bw} Mbps")
         log.info(f"[{idx}]   [GOLD]: ACTUAL: {gold_actual_bw:.3f} | REQUESTED: {gold_bw} Mbps")
         stop_iperf3()
+        time.sleep(0.1)
 
     GOLD_SLA = 7
     plot_competition(
@@ -91,21 +94,10 @@ def test_ai(
         report_interval=bw_change_interval
     )
 
-    # log.info(f"Gold Bandwidth {gold_actual_bw} Mbps")
-    # log.info(f"Bronze Bandwidth {bronze_actual_bw} Mbps")
-
-    # Allow some tolerance since we have a lot of factors that
-    # can change our bandwidth
-    # baseline_gold, baseline_bronze = check_bw(
-    #     gold_bandwidth,
-    #     bronze_bandwidth,
-    #     mode,
-    #     parallel,
-    #     10
-    # )
-
-    # log.info(f"Gold BASELINE Bandwidth: {baseline_gold} Mbps")
-    # log.info(f"Bronze BASELINE Bandwidth: {baseline_bronze} Mbps")
-
-    # assert isclose(bronze_actual_bw, baseline_bronze, rel_tol=0.2)
-    # assert isclose(gold_actual_bw, baseline_gold, rel_tol=0.2)
+    check_bw_ai(
+        requested_bronze=bronze_bandwidth,
+        requested_gold=gold_bandwidth,
+        bronze_iperf_stats=bronze_stat_collection,
+        gold_iperf_stats=gold_stat_collection,
+        bw_change_interval=bw_change_interval,
+    )

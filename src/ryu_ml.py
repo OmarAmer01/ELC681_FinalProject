@@ -43,7 +43,12 @@ class LinearRegressionQoS(app_manager.RyuApp):
         self.connected_switches = set()
 
         self.GOLD_SLA = int(7e6)
-        self.last_ten_gold_bw = deque(maxlen=10)
+        self.gold_bw_sliding_window = deque(maxlen=10)
+        self.QUIET_WINDOW = 3
+        self.EVENT_RANGE = 0.1
+
+        self.set_gold_bw = 7
+        self.set_bronze_bw = 3
 
         # Linear regression alone causes my model
         # to diverge. Lets try smoothing.
@@ -66,14 +71,14 @@ class LinearRegressionQoS(app_manager.RyuApp):
         Use the linear regression model to get the 11th sample from the
         10 we have
         """
-        if len(self.last_ten_gold_bw) < 10:
+        if len(self.gold_bw_sliding_window) < 10:
             # If we are unable to predict,
             # give gold the maximum anyway
             pred = self.GOLD_SLA / 1e6
             self.last_pred.append(pred)
             return statistics.mean(self.last_pred)
 
-        samples = np.array(self.last_ten_gold_bw).reshape(1, -1)
+        samples = np.array(self.gold_bw_sliding_window).reshape(1, -1)
         model_prediction = self.model.predict(samples)[0]
         pred = np.clip(model_prediction, a_min=0.1, a_max=10)
         self.last_pred.append(pred)
@@ -124,7 +129,7 @@ class LinearRegressionQoS(app_manager.RyuApp):
                 else:
                     gold_bw = (8 * byte_delta) / time_delta
                     gold_bw /= 1e6
-                    self.last_ten_gold_bw.append(gold_bw)
+                    self.gold_bw_sliding_window.append(gold_bw)
                     self.prev_gold_tx_bytes = tx_bytes
                     self.prev_timestamp = current_time
                     # print(f"Retrieved Gold BW sample: {gold_bw/1000000:.2f} Mbps")
@@ -157,7 +162,8 @@ class LinearRegressionQoS(app_manager.RyuApp):
                 return
 
             # Update gold queue using UUID
-            cmd_gold = f"sudo ovs-vsctl set queue {self.gold_queue_uuid} other-config:min-rate={int(gold_bw)} other-config:max-rate={int(gold_bw)}"
+            cmd_gold = f"sudo ovs-vsctl set queue {self.gold_queue_uuid} other-config:min-rate={int(gold_bw)} other-config:max-rate=10000000"
+            # cmd_gold = f"sudo ovs-vsctl set queue {self.gold_queue_uuid} other-config:min-rate={int(gold_bw)} other-config:max-rate={int(gold_bw)}"
 
             result = subprocess.run(
                 cmd_gold, shell=True, capture_output=True, text=True)
@@ -177,30 +183,128 @@ class LinearRegressionQoS(app_manager.RyuApp):
                 return
 
             self.logger.info(
-                f"QoS updated - Gold: {gold_bw/1000000:.2f}Mbps, Bronze: {bronze_bw/1000000:.2f}Mbps")
+                f"----> QoS updated - Gold: {gold_bw/1000000:.2f}Mbps, Bronze: {bronze_bw/1000000:.2f}Mbps")
 
         except Exception as e:
             self.logger.error(f"Failed to update QoS: {e}")
 
     def monitor_and_adjust(self):
+        """
+        Lets see what we need to do. We quote from the project
+        document:
+
+        The agent predicts if the Gold user is about to go "quiet"
+        and temporarily gives that bandwidth to the Bronze user.
+
+        The agent:
+          Thats us
+
+        predicts:
+          We implemented the linear regression predictor so thats done.
+
+        if the Gold user is about to go quiet:
+          We have to have a definition for 'going quiet'. Going quiet means that Gold
+          was 'talking' but now it is not talking. We can define Gold going quiet If
+          the prediction falls below some threshold, like the average of the sliding
+          window or something. Even better, we can define a range around the average
+          of the sliding window. This range can be 10% of the average of the sliding
+          window. If the prediction is within this range, nothing happens. If below
+          it, then we declare this as "Gold going quiet" and we can reallocate bandwidth.
+          If the prediction is above this 10% range we declare this as gold is talking
+          and bronze should let go of any extra bandwidth.
+
+        temporaily:
+          We have to revert to the original allocation after a while?
+          Im not sure how I can interpret this. We know that if the gold decides to talk
+          again we have to respond fast and redirect BW to Gold, giving
+          bronze a "ah ok fun while it lasted" moment. So, 'temporarily' means we need to define
+          the start and end of the period in which BW is redirected to bronze, which we already did
+          above: If the prediciton is less than 10% then gold is going quiet (START). If more than
+          10% then gold is talking again (END)
+
+        gives:
+          How would we give the bandwidth to Bronze? We can either give it gradually
+          or instantly. If I was a Bronze user I'd want to get it instatly. If was
+          a Gold user I'd want to Bronze to take it gradually because I might
+          want to talk at any moment. If I was the ISP i'd just care about money
+          and do what gold does. If I was a student who is running out of time, I'd pick
+          the simpler, easier-to-debug option of giving it gradually.
+
+        that bandwidth:
+          I think this means the leftover bandwidth, whatever the gold is not using.
+
+          We now need to define what leftover means.
+
+          We can define leftover as the difference between the total bandwidth (10 Mbps)
+          and our prediction.
+
+        """
+        debug_timestep_counter = 0
+        prev_quiet = False
         while True:
+            self.logger.info("\n")
+            self.logger.info(f"TIMESTEP: {debug_timestep_counter}")
+            debug_timestep_counter += 1
             # Fill the sliding window
             self.get_current_gold_bw()
+
+            # System Warmup: Fill the window first
+            # before making any predicions
+            while len(self.gold_bw_sliding_window) < 10:
+                self.logger.info(
+                    f"[SYSTEM WARMUP] Iterations remaining: {10 - len(self.gold_bw_sliding_window)}")
+                self.get_current_gold_bw()
+                time.sleep(1)
+                self.logger.info(f"TIMESTEP: {debug_timestep_counter}")
+                debug_timestep_counter += 1
+
             prediction = self.predict_gold_bw()
-            gold_allocation = prediction
-            if len(self.last_ten_gold_bw) == 10:
-              gold_allocation = max(self.last_ten_gold_bw[-1], prediction) # Max of prediction / current bandwidth
 
-            self.update_qos_queues(
-                gold_bw=1e6 * gold_allocation, # Gold gets what we think it needs
-                bronze_bw=1e6 * (10 - gold_allocation), # Bronze takes whats left.
-            )
+            # Is gold going to shut up?
+            # Take the last self.QUIET_WINDOW elements of the sliding window to find out
+            # quiet_window = list(self.gold_bw_sliding_window)[-self.QUIET_WINDOW: len(self.gold_bw_sliding_window)]
+            # is_going_quiet = prediction < statistics.mean(quiet_window) * (1 - self.EVENT_RANGE)
+            # is_about_to_talk = prediction > statistics.mean(quiet_window)
 
-            self.logger.info(" ".join([f"{i:.2f}" for i in self.last_ten_gold_bw]))
-            self.logger.info(f"Prediction: {prediction:.2f} Mbps")
-            self.logger.info("=====================================")
+            # quiet_window = list(self.gold_bw_sliding_window)[-self.QUIET_WINDOW: len(self.gold_bw_sliding_window)]
+            is_going_quiet = (prediction < 7 * (1 - self.EVENT_RANGE)) and not prev_quiet
+            prev_quiet = is_going_quiet # Dont go quiet twice in a row
+            is_about_to_talk = prediction >= 7
+
+
+            if is_going_quiet:
+                self.logger.info("GOLD IS GOING QUIET")
+
+            if is_about_to_talk:
+                self.logger.info("GOLD IS ABOUT TO TALK")
+
             time.sleep(1)
 
+
+            if is_about_to_talk:
+                self.set_gold_bw = 7
+                self.set_bronze_bw = 3
+                self.update_qos_queues(
+                    gold_bw=1e6 * self.set_gold_bw,  # Gold gets the guaranteed 7Mbps
+                    bronze_bw=1e6 * self.set_bronze_bw, # Bronze gets the 3Mbps
+                )
+
+            if is_going_quiet:
+                self.set_gold_bw = prediction
+                self.set_bronze_bw = 10 - prediction
+                self.update_qos_queues(
+                    gold_bw=1e6 * self.set_gold_bw,  # Gold gets what we think it needs
+                    # Bronze takes whats left.
+                    bronze_bw=1e6 * self.set_bronze_bw,
+                )
+
+            self.logger.info(f"Prediction: {prediction:.2f} Mbps")
+            self.logger.info(f"GOLD ALLOCATION: {self.set_gold_bw:.2f} Mbps")
+            self.logger.info(
+                f"BRONZE ALLOCATION: {self.set_bronze_bw:.2f} Mbps")
+            self.logger.info(
+                " ".join([f"{i:.2f}" for i in self.gold_bw_sliding_window]))
+            self.logger.info("=====================================")
 
     def cache_queue_uuids(self):
         """
@@ -246,13 +350,16 @@ class LinearRegressionQoS(app_manager.RyuApp):
             check=True
         )
 
+        # Start as a free country
+        # best effort until we properly setup qos
+
         cmd = """
         sudo ovs-vsctl \
         -- set Port slow_SW1-eth3 qos=@newqos \
         -- --id=@newqos create QoS type=linux-htb other-config:max-rate=10000000 \
         queues:1=@gold queues:2=@bronze \
         -- --id=@gold create Queue other-config:min-rate=7000000 other-config:max-rate=10000000 external-ids:name=gold_queue \
-        -- --id=@bronze create Queue other-config:min-rate=3000000 other-config:max-rate=3000000 external-ids:name=bronze_queue
+        -- --id=@bronze create Queue other-config:min-rate=3000000 other-config:max-rate=10000000 external-ids:name=bronze_queue
         """
 
         # When we type 'links' in mininet it
