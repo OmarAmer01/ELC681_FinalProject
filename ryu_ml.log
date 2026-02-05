@@ -2,10 +2,10 @@ loading app /home/mininet/project/src/ryu_ml.py
 loading app ryu.controller.ofp_handler
 instantiating app /home/mininet/project/src/ryu_ml.py of LinearRegressionQoS
 instantiating app ryu.controller.ofp_handler of OFPHandler
-5c64ac6f-6eae-475a-ad9c-4076ced37f98
-bee50f0e-04b9-48a3-8fde-a7f2f52a8ad8
-847862a8-6eb6-4ce3-8b75-555cdbbfea05
-Cached queue UUIDs - Gold: bee50f0e-04b9-48a3-8fde-a7f2f52a8ad8, Bronze: 847862a8-6eb6-4ce3-8b75-555cdbbfea05
+e43b35ed-9c1c-47fd-901d-7512cac872ba
+8bbfafec-00fe-49a1-9563-d5eb1f97da9f
+4785c4ff-3d09-43a8-904d-312885a4619c
+Cached queue UUIDs - Gold: 8bbfafec-00fe-49a1-9563-d5eb1f97da9f, Bronze: 4785c4ff-3d09-43a8-904d-312885a4619c
 Started dynamic QoS monitoring
 
 
@@ -32,298 +32,348 @@ TIMESTEP: 9
 TIMESTEP: 10
 GOLD IS ABOUT TO TALK
 ----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
-Prediction: 7.38 Mbps
+Prediction: 7.15 Mbps
 GOLD ALLOCATION: 7.00 Mbps
 BRONZE ALLOCATION: 3.00 Mbps
-8.58 6.71 6.15 6.94 6.03 6.96 5.75 6.99 5.47 7.30
+8.57 6.45 5.50 6.30 5.13 6.13 5.94 7.14 5.82 6.87
 =====================================
 
 
 TIMESTEP: 11
-Prediction: 6.72 Mbps
-GOLD ALLOCATION: 7.00 Mbps
-BRONZE ALLOCATION: 3.00 Mbps
-6.71 6.15 6.94 6.03 6.96 5.75 6.99 5.47 7.30 6.54
-=====================================
+QUIET BLOCKER: 2
+Prediction: 7.15 Mbps
+6.45 5.50 6.30 5.13 6.13 5.94 7.14 5.82 6.87 4.87
 
 
 TIMESTEP: 12
-Prediction: 6.63 Mbps
-GOLD ALLOCATION: 7.00 Mbps
-BRONZE ALLOCATION: 3.00 Mbps
-6.15 6.94 6.03 6.96 5.75 6.99 5.47 7.30 6.54 6.28
-=====================================
+QUIET BLOCKER: 1
+Prediction: 7.15 Mbps
+5.50 6.30 5.13 6.13 5.94 7.14 5.82 6.87 4.87 3.88
 
 
 TIMESTEP: 13
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 6.16Mbps, Bronze: 3.84Mbps
-Prediction: 6.16 Mbps
-GOLD ALLOCATION: 6.16 Mbps
-BRONZE ALLOCATION: 3.84 Mbps
-6.94 6.03 6.96 5.75 6.99 5.47 7.30 6.54 6.28 5.11
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 7.15 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+6.30 5.13 6.13 5.94 7.14 5.82 6.87 4.87 3.88 5.06
 =====================================
 
 
 TIMESTEP: 14
-Prediction: 6.33 Mbps
-GOLD ALLOCATION: 6.16 Mbps
-BRONZE ALLOCATION: 3.84 Mbps
-6.03 6.96 5.75 6.99 5.47 7.30 6.54 6.28 5.11 6.83
-=====================================
+QUIET BLOCKER: 2
+Prediction: 5.83 Mbps
+5.13 6.13 5.94 7.14 5.82 6.87 4.87 3.88 5.06 5.86
 
 
 TIMESTEP: 15
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 5.83Mbps, Bronze: 4.17Mbps
+QUIET BLOCKER: 1
 Prediction: 5.83 Mbps
-GOLD ALLOCATION: 5.83 Mbps
-BRONZE ALLOCATION: 4.17 Mbps
-6.96 5.75 6.99 5.47 7.30 6.54 6.28 5.11 6.83 5.32
-=====================================
+6.13 5.94 7.14 5.82 6.87 4.87 3.88 5.06 5.86 4.71
 
 
 TIMESTEP: 16
-Prediction: 5.88 Mbps
-GOLD ALLOCATION: 5.83 Mbps
-BRONZE ALLOCATION: 4.17 Mbps
-5.75 6.99 5.47 7.30 6.54 6.28 5.11 6.83 5.32 6.07
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 7.11 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+5.94 7.14 5.82 6.87 4.87 3.88 5.06 5.86 4.71 6.82
 =====================================
 
 
 TIMESTEP: 17
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 5.50Mbps, Bronze: 4.50Mbps
-Prediction: 5.50 Mbps
-GOLD ALLOCATION: 5.50 Mbps
-BRONZE ALLOCATION: 4.50 Mbps
-6.99 5.47 7.30 6.54 6.28 5.11 6.83 5.32 6.07 4.91
-=====================================
+QUIET BLOCKER: 2
+Prediction: 7.11 Mbps
+7.14 5.82 6.87 4.87 3.88 5.06 5.86 4.71 6.82 4.95
 
 
 TIMESTEP: 18
-Prediction: 5.76 Mbps
-GOLD ALLOCATION: 5.50 Mbps
-BRONZE ALLOCATION: 4.50 Mbps
-5.47 7.30 6.54 6.28 5.11 6.83 5.32 6.07 4.91 5.80
-=====================================
+QUIET BLOCKER: 1
+Prediction: 7.44 Mbps
+5.82 6.87 4.87 3.88 5.06 5.86 4.71 6.82 4.95 7.25
 
 
 TIMESTEP: 19
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 5.20Mbps, Bronze: 4.80Mbps
-Prediction: 5.20 Mbps
-GOLD ALLOCATION: 5.20 Mbps
-BRONZE ALLOCATION: 4.80 Mbps
-7.30 6.54 6.28 5.11 6.83 5.32 6.07 4.91 5.80 4.54
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 7.44 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+6.87 4.87 3.88 5.06 5.86 4.71 6.82 4.95 7.25 5.05
 =====================================
 
 
 TIMESTEP: 20
-Prediction: 5.41 Mbps
-GOLD ALLOCATION: 5.20 Mbps
-BRONZE ALLOCATION: 4.80 Mbps
-6.54 6.28 5.11 6.83 5.32 6.07 4.91 5.80 4.54 5.71
-=====================================
+QUIET BLOCKER: 2
+Prediction: 7.44 Mbps
+4.87 3.88 5.06 5.86 4.71 6.82 4.95 7.25 5.05 5.19
 
 
 TIMESTEP: 21
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 5.02Mbps, Bronze: 4.98Mbps
-Prediction: 5.02 Mbps
-GOLD ALLOCATION: 5.02 Mbps
-BRONZE ALLOCATION: 4.98 Mbps
-6.28 5.11 6.83 5.32 6.07 4.91 5.80 4.54 5.71 4.68
-=====================================
+QUIET BLOCKER: 1
+Prediction: 7.44 Mbps
+3.88 5.06 5.86 4.71 6.82 4.95 7.25 5.05 5.19 4.93
 
 
 TIMESTEP: 22
-Prediction: 5.17 Mbps
-GOLD ALLOCATION: 5.02 Mbps
-BRONZE ALLOCATION: 4.98 Mbps
-5.11 6.83 5.32 6.07 4.91 5.80 4.54 5.71 4.68 5.03
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 5.68Mbps, Bronze: 4.32Mbps
+Prediction: 5.68 Mbps
+GOLD ALLOCATION: 5.68 Mbps
+BRONZE ALLOCATION: 4.32 Mbps
+5.06 5.86 4.71 6.82 4.95 7.25 5.05 5.19 4.93 3.74
 =====================================
 
 
 TIMESTEP: 23
 GOLD IS GOING QUIET
-----> QoS updated - Gold: 4.90Mbps, Bronze: 5.10Mbps
-Prediction: 4.90 Mbps
-GOLD ALLOCATION: 4.90 Mbps
-BRONZE ALLOCATION: 5.10 Mbps
-6.83 5.32 6.07 4.91 5.80 4.54 5.71 4.68 5.03 4.98
+----> QoS updated - Gold: 5.68Mbps, Bronze: 4.32Mbps
+Prediction: 5.68 Mbps
+GOLD ALLOCATION: 5.68 Mbps
+BRONZE ALLOCATION: 4.32 Mbps
+5.86 4.71 6.82 4.95 7.25 5.05 5.19 4.93 3.74 4.93
 =====================================
 
 
 TIMESTEP: 24
-Prediction: 4.98 Mbps
-GOLD ALLOCATION: 4.90 Mbps
-BRONZE ALLOCATION: 5.10 Mbps
-5.32 6.07 4.91 5.80 4.54 5.71 4.68 5.03 4.98 4.35
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.91Mbps, Bronze: 5.09Mbps
+Prediction: 4.91 Mbps
+GOLD ALLOCATION: 4.91 Mbps
+BRONZE ALLOCATION: 5.09 Mbps
+4.71 6.82 4.95 7.25 5.05 5.19 4.93 3.74 4.93 3.97
 =====================================
 
 
 TIMESTEP: 25
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 4.72Mbps, Bronze: 5.28Mbps
-Prediction: 4.72 Mbps
-GOLD ALLOCATION: 4.72 Mbps
-BRONZE ALLOCATION: 5.28 Mbps
-6.07 4.91 5.80 4.54 5.71 4.68 5.03 4.98 4.35 4.86
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 5.38 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+6.82 4.95 7.25 5.05 5.19 4.93 3.74 4.93 3.97 5.26
 =====================================
 
 
 TIMESTEP: 26
-Prediction: 4.75 Mbps
-GOLD ALLOCATION: 4.72 Mbps
-BRONZE ALLOCATION: 5.28 Mbps
-4.91 5.80 4.54 5.71 4.68 5.03 4.98 4.35 4.86 4.37
-=====================================
+QUIET BLOCKER: 2
+Prediction: 5.38 Mbps
+4.95 7.25 5.05 5.19 4.93 3.74 4.93 3.97 5.26 3.77
 
 
 TIMESTEP: 27
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 4.62Mbps, Bronze: 5.38Mbps
-Prediction: 4.62 Mbps
-GOLD ALLOCATION: 4.62 Mbps
-BRONZE ALLOCATION: 5.38 Mbps
-5.80 4.54 5.71 4.68 5.03 4.98 4.35 4.86 4.37 4.71
-=====================================
+QUIET BLOCKER: 1
+Prediction: 5.38 Mbps
+7.25 5.05 5.19 4.93 3.74 4.93 3.97 5.26 3.77 4.28
 
 
 TIMESTEP: 28
-Prediction: 4.53 Mbps
-GOLD ALLOCATION: 4.62 Mbps
-BRONZE ALLOCATION: 5.38 Mbps
-4.54 5.71 4.68 5.03 4.98 4.35 4.86 4.37 4.71 4.22
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 5.38Mbps, Bronze: 4.62Mbps
+Prediction: 5.38 Mbps
+GOLD ALLOCATION: 5.38 Mbps
+BRONZE ALLOCATION: 4.62 Mbps
+5.05 5.19 4.93 3.74 4.93 3.97 5.26 3.77 4.28 3.04
 =====================================
 
 
 TIMESTEP: 29
 GOLD IS GOING QUIET
-----> QoS updated - Gold: 4.55Mbps, Bronze: 5.45Mbps
-Prediction: 4.55 Mbps
-GOLD ALLOCATION: 4.55 Mbps
-BRONZE ALLOCATION: 5.45 Mbps
-5.71 4.68 5.03 4.98 4.35 4.86 4.37 4.71 4.22 4.62
+----> QoS updated - Gold: 4.63Mbps, Bronze: 5.37Mbps
+Prediction: 4.63 Mbps
+GOLD ALLOCATION: 4.63 Mbps
+BRONZE ALLOCATION: 5.37 Mbps
+5.19 4.93 3.74 4.93 3.97 5.26 3.77 4.28 3.04 4.33
 =====================================
 
 
 TIMESTEP: 30
-Prediction: 4.39 Mbps
-GOLD ALLOCATION: 4.55 Mbps
-BRONZE ALLOCATION: 5.45 Mbps
-4.68 5.03 4.98 4.35 4.86 4.37 4.71 4.22 4.62 3.94
+GOLD IS GOING QUIET
+----> QoS updated - Gold: 4.63Mbps, Bronze: 5.37Mbps
+Prediction: 4.63 Mbps
+GOLD ALLOCATION: 4.63 Mbps
+BRONZE ALLOCATION: 5.37 Mbps
+4.93 3.74 4.93 3.97 5.26 3.77 4.28 3.04 4.33 3.78
 =====================================
 
 
 TIMESTEP: 31
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 4.47Mbps, Bronze: 5.53Mbps
-Prediction: 4.47 Mbps
-GOLD ALLOCATION: 4.47 Mbps
-BRONZE ALLOCATION: 5.53 Mbps
-5.03 4.98 4.35 4.86 4.37 4.71 4.22 4.62 3.94 4.74
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 4.95 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+3.74 4.93 3.97 5.26 3.77 4.28 3.04 4.33 3.78 4.72
 =====================================
 
 
 TIMESTEP: 32
-Prediction: 4.35 Mbps
-GOLD ALLOCATION: 4.47 Mbps
-BRONZE ALLOCATION: 5.53 Mbps
-4.98 4.35 4.86 4.37 4.71 4.22 4.62 3.94 4.74 4.19
-=====================================
+QUIET BLOCKER: 2
+Prediction: 4.95 Mbps
+4.93 3.97 5.26 3.77 4.28 3.04 4.33 3.78 4.72 4.63
 
 
 TIMESTEP: 33
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 4.41Mbps, Bronze: 5.59Mbps
-Prediction: 4.41 Mbps
-GOLD ALLOCATION: 4.41 Mbps
-BRONZE ALLOCATION: 5.59 Mbps
-4.35 4.86 4.37 4.71 4.22 4.62 3.94 4.74 4.19 4.33
-=====================================
+QUIET BLOCKER: 1
+Prediction: 4.95 Mbps
+3.97 5.26 3.77 4.28 3.04 4.33 3.78 4.72 4.63 4.29
 
 
 TIMESTEP: 34
-Prediction: 4.33 Mbps
-GOLD ALLOCATION: 4.41 Mbps
-BRONZE ALLOCATION: 5.59 Mbps
-4.86 4.37 4.71 4.22 4.62 3.94 4.74 4.19 4.33 4.46
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 5.94 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+5.26 3.77 4.28 3.04 4.33 3.78 4.72 4.63 4.29 6.07
 =====================================
 
 
 TIMESTEP: 35
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 4.43Mbps, Bronze: 5.57Mbps
-Prediction: 4.43 Mbps
-GOLD ALLOCATION: 4.43 Mbps
-BRONZE ALLOCATION: 5.57 Mbps
-4.37 4.71 4.22 4.62 3.94 4.74 4.19 4.33 4.46 4.20
-=====================================
+QUIET BLOCKER: 2
+Prediction: 5.94 Mbps
+3.77 4.28 3.04 4.33 3.78 4.72 4.63 4.29 6.07 5.08
 
 
 TIMESTEP: 36
-Prediction: 4.32 Mbps
-GOLD ALLOCATION: 4.43 Mbps
-BRONZE ALLOCATION: 5.57 Mbps
-4.71 4.22 4.62 3.94 4.74 4.19 4.33 4.46 4.20 4.39
-=====================================
+QUIET BLOCKER: 1
+Prediction: 7.16 Mbps
+4.28 3.04 4.33 3.78 4.72 4.63 4.29 6.07 5.08 7.12
 
 
 TIMESTEP: 37
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 4.33Mbps, Bronze: 5.67Mbps
-Prediction: 4.33 Mbps
-GOLD ALLOCATION: 4.33 Mbps
-BRONZE ALLOCATION: 5.67 Mbps
-4.22 4.62 3.94 4.74 4.19 4.33 4.46 4.20 4.39 4.01
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 7.16 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+3.04 4.33 3.78 4.72 4.63 4.29 6.07 5.08 7.12 4.95
 =====================================
 
 
 TIMESTEP: 38
-Prediction: 4.31 Mbps
-GOLD ALLOCATION: 4.33 Mbps
-BRONZE ALLOCATION: 5.67 Mbps
-4.62 3.94 4.74 4.19 4.33 4.46 4.20 4.39 4.01 4.44
-=====================================
+QUIET BLOCKER: 2
+Prediction: 7.84 Mbps
+4.33 3.78 4.72 4.63 4.29 6.07 5.08 7.12 4.95 7.48
 
 
 TIMESTEP: 39
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 4.16Mbps, Bronze: 5.84Mbps
-Prediction: 4.16 Mbps
-GOLD ALLOCATION: 4.16 Mbps
-BRONZE ALLOCATION: 5.84 Mbps
-3.94 4.74 4.19 4.33 4.46 4.20 4.39 4.01 4.44 3.55
-=====================================
+QUIET BLOCKER: 1
+Prediction: 7.84 Mbps
+3.78 4.72 4.63 4.29 6.07 5.08 7.12 4.95 7.48 6.30
 
 
 TIMESTEP: 40
-Prediction: 4.25 Mbps
-GOLD ALLOCATION: 4.16 Mbps
-BRONZE ALLOCATION: 5.84 Mbps
-4.74 4.19 4.33 4.46 4.20 4.39 4.01 4.44 3.55 4.68
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 7.84 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+4.72 4.63 4.29 6.07 5.08 7.12 4.95 7.48 6.30 6.21
 =====================================
 
 
 TIMESTEP: 41
-GOLD IS GOING QUIET
-----> QoS updated - Gold: 4.00Mbps, Bronze: 6.00Mbps
-Prediction: 4.00 Mbps
-GOLD ALLOCATION: 4.00 Mbps
-BRONZE ALLOCATION: 6.00 Mbps
-4.19 4.33 4.46 4.20 4.39 4.01 4.44 3.55 4.68 3.15
-=====================================
+QUIET BLOCKER: 2
+Prediction: 7.84 Mbps
+4.63 4.29 6.07 5.08 7.12 4.95 7.48 6.30 6.21 6.99
 
 
 TIMESTEP: 42
-Prediction: 3.86 Mbps
-GOLD ALLOCATION: 4.00 Mbps
-BRONZE ALLOCATION: 6.00 Mbps
-4.33 4.46 4.20 4.39 4.01 4.44 3.55 4.68 3.15 3.09
-=====================================
+QUIET BLOCKER: 1
+Prediction: 6.76 Mbps
+4.29 6.07 5.08 7.12 4.95 7.48 6.30 6.21 6.99 5.44
 
 
 TIMESTEP: 43
-GOLD IS GOING QUIET
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 7.00 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+6.07 5.08 7.12 4.95 7.48 6.30 6.21 6.99 5.44 7.00
+=====================================
+
+
+TIMESTEP: 44
+QUIET BLOCKER: 2
+Prediction: 7.00 Mbps
+5.08 7.12 4.95 7.48 6.30 6.21 6.99 5.44 7.00 5.20
+
+
+TIMESTEP: 45
+QUIET BLOCKER: 1
+Prediction: 7.61 Mbps
+7.12 4.95 7.48 6.30 6.21 6.99 5.44 7.00 5.20 7.33
+
+
+TIMESTEP: 46
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 7.61 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+4.95 7.48 6.30 6.21 6.99 5.44 7.00 5.20 7.33 5.17
+=====================================
+
+
+TIMESTEP: 47
+QUIET BLOCKER: 2
+Prediction: 7.93 Mbps
+7.48 6.30 6.21 6.99 5.44 7.00 5.20 7.33 5.17 7.46
+
+
+TIMESTEP: 48
+QUIET BLOCKER: 1
+Prediction: 7.93 Mbps
+6.30 6.21 6.99 5.44 7.00 5.20 7.33 5.17 7.46 7.71
+
+
+TIMESTEP: 49
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 7.93 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+6.21 6.99 5.44 7.00 5.20 7.33 5.17 7.46 7.71 5.54
+=====================================
+
+
+TIMESTEP: 50
+QUIET BLOCKER: 2
+Prediction: 7.93 Mbps
+6.99 5.44 7.00 5.20 7.33 5.17 7.46 7.71 5.54 6.24
+
+
+TIMESTEP: 51
+QUIET BLOCKER: 1
+Prediction: 7.14 Mbps
+5.44 7.00 5.20 7.33 5.17 7.46 7.71 5.54 6.24 5.29
+
+
+TIMESTEP: 52
+GOLD IS ABOUT TO TALK
+----> QoS updated - Gold: 7.00Mbps, Bronze: 3.00Mbps
+Prediction: 7.04 Mbps
+GOLD ALLOCATION: 7.00 Mbps
+BRONZE ALLOCATION: 3.00 Mbps
+7.00 5.20 7.33 5.17 7.46 7.71 5.54 6.24 5.29 7.07
+=====================================
+
+
+TIMESTEP: 53
+QUIET BLOCKER: 2
+Prediction: 7.04 Mbps
+5.20 7.33 5.17 7.46 7.71 5.54 6.24 5.29 7.07 5.37
+
+
+TIMESTEP: 54
+QUIET BLOCKER: 1
+Prediction: 7.57 Mbps
+7.33 5.17 7.46 7.71 5.54 6.24 5.29 7.07 5.37 7.15
+
+
+TIMESTEP: 55
+GOLD IS ABOUT TO TALK

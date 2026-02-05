@@ -98,9 +98,10 @@ if __name__ == "__main__":
     # A new value is requested every 2 secs
     gold_rates = generate_ar1_traffic(
         mean_mbps=5,
-        variance=3,
+        variance=4,
         phi=0.9,
-        duration_sec=duration//2
+        duration_sec=duration//2,
+        seed=None
     )
 
     # Time for iperf, we need to start a
@@ -137,13 +138,18 @@ if __name__ == "__main__":
         server.sendInt()
         time.sleep(0.1)
 
-    t_1 = np.arange(0, duration, 1, dtype=np.float32)
+    # Remove the mean to somewhat OK predictions
+    bw_list = bw_list - np.mean(bw_list)
+    gold_rates = gold_rates - np.mean(gold_rates)
+
+    plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(8, 5))
 
-    ax.plot(t_1, bw_list, label="Generated Data")
+    t_1 = np.arange(0, duration, 1, dtype=np.float32)
+    ax.plot(t_1, bw_list, label="Generated Data (Mean Removed)")
 
     t_2 = np.arange(0, duration, 2, dtype=np.float32)
-    ax.plot(t_2, gold_rates, label="Requested Rates")
+    ax.plot(t_2, gold_rates, label="Requested Rates (Mean removed)")
 
     ax.set_xlabel("Time (s)", fontsize=14)
     ax.set_ylabel("Bandwidth (Mbps)", fontsize=14)

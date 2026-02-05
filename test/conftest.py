@@ -20,6 +20,7 @@ import time
 import random
 
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator
 from mininet.clean import cleanup
 from mininet.net import Mininet
 from mininet.link import TCLink
@@ -36,12 +37,14 @@ def pytest_configure(config):
         "markers", "ryu(path-to-ryu-app, console_out_dir): Use the specified Ryu application as the controller instead of the default Mininet controller"
     )
 
+
 @pytest.fixture(scope="session", autouse=True)
 def seed():
     SEED = 67
     random.seed(SEED)
     np.random.seed(67)
     yield
+
 
 @pytest.fixture(scope="module", autouse=True)
 def mininet_cleanup(log: Logger):
@@ -336,6 +339,7 @@ def plot_competition(request):
 
         # bronze_total_bw = get_final_bw(bronze_stats)
         # gold_total_bw = get_final_bw(gold_stats)
+        plt.style.use('dark_background')  # We ride in style haha
 
         fig, ax = plt.subplots(figsize=(8, 5))
         ax.set_xlabel("Time (s)", fontsize=14)
@@ -370,35 +374,75 @@ def plot_competition(request):
                        label="Gold SLA", color="tab:green")
         plt.legend()
 
+        ax.xaxis.set_minor_locator(MultipleLocator(1))
+        ax.grid(which="major", axis="y", linestyle="--", alpha=0.3)
+        ax.grid(which="minor", axis="x", linestyle=":", alpha=0.2)
         plt.savefig(f"figs/{plot_title}.svg", format="svg")
 
     return _save_plot
 
+
 @pytest.fixture
-def check_bw_ai(request):
+def check_bw_ai(request, log: Logger):
     test_name: str = request.node.name
     assert "ai" in test_name.lower(), "Test mode is not AI."
+    TOLERANCE = 0.1
 
     def _check_bw(
         requested_bronze: NDArray,
         requested_gold: NDArray,
         bronze_iperf_stats,
         gold_iperf_stats,
-        bw_change_interval
+        bw_change_interval: int
     ):
-        # Take every 10th element (report interval is a nice fixed 0.1 secs)
-        bronze_actual_bw = merge_intervals(bronze_iperf_stats)[1][::10]
-        gold_actual_bw = merge_intervals(gold_iperf_stats)[1][::10]
-        # breakpoint()
-        print(requested_bronze)
-        print(bronze_actual_bw)
 
-        print(requested_gold)
-        print(gold_actual_bw)
 
-        # Check 1: Gold drops below its SLA
-        # only if it wishes to.
 
+        # The raw data is reported once each 0.1 secs
+        raw_gold_bw = merge_intervals(gold_iperf_stats)[1]
+        raw_bronze_bw = merge_intervals(bronze_iperf_stats)[1]
+        requested_gold = requested_gold.repeat(bw_change_interval)
+        requested_bronze = requested_bronze.repeat(bw_change_interval)
+
+        gold_actual_bw = [
+            np.median(i) for i in np.split(
+                np.array(raw_gold_bw),
+                len(raw_gold_bw) // (10)
+            )
+        ]
+
+        bronze_actual_bw = [
+            np.median(i) for i in np.split(
+                np.array(raw_bronze_bw),
+                len(raw_bronze_bw) // 10
+            )
+        ]
+
+        # Check 1: Gold does not drop below its SLA
+        # Unless it explicitly wishes to.
+
+        freedom_counter = 0
+        test_2_valid = False
+        for idx, (gold_baseline, gold, bronze_baseline, bronze) in enumerate(zip(requested_gold, gold_actual_bw, requested_bronze, bronze_actual_bw)):
+            if gold < (7 - 7 * TOLERANCE):
+                test_2_valid = True
+                assert gold_baseline < 7, f"Gold SLA noncompliance: Requested {gold_baseline}, acquired {gold} @ T = {idx}"
+
+            if bronze_baseline > (3 + (3 * TOLERANCE)):
+                if bronze > (3 + (3 * TOLERANCE)):
+                    freedom_counter += 1
+
+        log.info("Check 1: PASS -- Gold is compliant.")
+
+
+        # Check 2: Bronze gets its freedom every now and then
+        if test_2_valid:
+          assert freedom_counter > 0
+        else:
+            log.warning(f"Gold did not dip below 7Mbps meaning that bronze was not granted freedom. Please rerun the test.")
+
+
+        log.info(f"Check 2: PASS -- Bronze takes leftovers ({freedom_counter} Seconds of freedom were granted.)")
 
 
     return _check_bw

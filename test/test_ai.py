@@ -22,7 +22,7 @@ from src.data_gen import generate_ar1_traffic
 @pytest.mark.parametrize(
     "mode, gold_bandwidth, bronze_bandwidth, timeout, parallel, bw_change_interval",
     [
-        ("UDP", generate_ar1_traffic(8, 3, 0.9, 20,None), generate_ar1_traffic(8, 3, 0.9, 20, None), 20, None, 2),
+        ("UDP", generate_ar1_traffic(7, 2, 0.9, 25,None), generate_ar1_traffic(7, 2, 0.9, 25, None), 25, None, 2),
     ],
 )
 @pytest.mark.ryu("src/ryu_ml.py", "ryu_ml.log")

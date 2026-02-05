@@ -13,10 +13,10 @@ all:
 	@sudo -E python3 -m pytest -s --html=test_report.html --self-contained-html
 
 demo_dataset:
-	@sudo -E python3 src/data_gen.py 30
+	@sudo -E python3 -m src.data_gen 30
 
 dataset:
-	@sudo -E python3 src/data_gen.py 600
+	@sudo -E python3 -m src.data_gen 600
 
 model:
 	@sudo -E python3 src/regr.py --data-csv data/bw_list_600.csv
