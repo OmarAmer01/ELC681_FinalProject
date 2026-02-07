@@ -23,7 +23,16 @@ from src.data_gen import generate_ar1_traffic
     "mode, gold_bandwidth, bronze_bandwidth, timeout, parallel, bw_change_interval",
     [
         ("UDP", generate_ar1_traffic(7, 2, 0.9, 25,None), generate_ar1_traffic(7, 2, 0.9, 25, None), 25, None, 2),
+        ("UDP", generate_ar1_traffic(9, 2, 0.9, 25,None), generate_ar1_traffic(9, 2, 0.9, 25, None), 25, None, 2),
+        ("UDP", generate_ar1_traffic(5, 2, 0.9, 25,None), generate_ar1_traffic(5, 2, 0.9, 25, None), 25, None, 2),
+        ("UDP", generate_ar1_traffic(6, 2, 0.9, 25,None), generate_ar1_traffic(8, 2, 0.9, 25, None), 25, None, 2),
     ],
+    ids=[
+        "UDP-AllMean_7-Var_2-Phi_0.9",
+        "UDP-AllMean_9-Var_2-Phi_0.9",
+        "UDP-AllMean_5-Var_2-Phi_0.9",
+        "UDP-Mean_G6B8-Var_2-Phi_0.9",
+    ]
 )
 @pytest.mark.ryu("src/ryu_ml.py", "ryu_ml.log")
 def test_ai(

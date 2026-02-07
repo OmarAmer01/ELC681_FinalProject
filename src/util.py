@@ -14,7 +14,7 @@ class PORTS(Enum):
 
 def get_final_bw(iperf_report: Dict) -> float:
     if "error" in iperf_report:
-        pp(iperf_report)
+        # pp(iperf_report)
         return -1
     if "sum_sent" in iperf_report["end"]:
         return iperf_report["end"]["sum_sent"]["bits_per_second"] / 1e6

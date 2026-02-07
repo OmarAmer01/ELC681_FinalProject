@@ -127,7 +127,7 @@ class HardCodedQoS(app_manager.RyuApp):
 
     def install_per_host_flows(self, dp):
         """
-        This is to enable communication between gold/bronze
+        This is to enable communication between gold/bronze and the server
         """
         parser = dp.ofproto_parser
 

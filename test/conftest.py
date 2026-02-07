@@ -495,13 +495,15 @@ def check_bw(request):
             else:
                 total_requested = requested_gold_bw + requested_bronze_bw
 
-            if total_requested <= bottleneck:
+            if total_requested < bottleneck:
                 return (requested_gold_bw, min(requested_bronze_bw, 3))
             else:
                 if test_mode == "BEST_EFFORT":
                     scale = bottleneck / total_requested
                     return (requested_gold_bw * scale, requested_bronze_bw * scale)
                 elif test_mode == "70-30":
+                    if total_requested == bottleneck:
+                        return (requested_gold_bw, requested_bronze_bw)
                     return (bottleneck * 0.7, bottleneck * 0.3)
 
     if 'best_effort' in test_name:

@@ -1,5 +1,9 @@
 .PHONY: test_best_effort test_70_30 all clean killall collect results
 
+install:
+	@sudo apt install iperf3
+	@pip3 install -r requirements.txt || true
+
 test_best_effort:
 	@sudo -E python3 -m pytest -k test_best_effort_all_no_control -s --html=best_effort.html --self-contained-html
 
@@ -9,8 +13,9 @@ test_70_30:
 test_ai:
 	@sudo -E python3 -m pytest -k test_ai -s --html=ai.html --self-contained-html
 
-all:
-	@sudo -E python3 -m pytest -s --html=test_report.html --self-contained-html
+all: clean model
+	@sudo -E python3 -m pytest -s --html=index.html --self-contained-html
+	@echo "Now run 'make results' to view the results"
 
 demo_dataset:
 	@sudo -E python3 -m src.data_gen 30
@@ -18,7 +23,7 @@ demo_dataset:
 dataset:
 	@sudo -E python3 -m src.data_gen 600
 
-model:
+model: dataset
 	@sudo -E python3 src/regr.py --data-csv data/bw_list_600.csv
 
 results:
@@ -35,6 +40,6 @@ clean: killall
 	rm *.log -f
 	rm figs/* -f
 	sudo ovs-vsctl -- --all destroy QoS -- --all destroy Queue
-	rm data/*
+	rm data/* -f
 
 

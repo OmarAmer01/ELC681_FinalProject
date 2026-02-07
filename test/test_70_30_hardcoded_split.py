@@ -36,7 +36,7 @@ def test_70_30_hardcoded_split(
     gold: Host,
     bronze: Host,
     server: Host,
-    iperf3_server: Host,
+    iperf3_server,
     run_iperf3,
     collect_iperf3,
     gold_bandwidth,
@@ -48,6 +48,8 @@ def test_70_30_hardcoded_split(
     check_bw
 ):
 
+    start_iperf3, stop_iperf3 = iperf3_server
+    start_iperf3()
     run_iperf3(
         gold,
         server,
@@ -74,8 +76,10 @@ def test_70_30_hardcoded_split(
     bronze_actual_bw = get_final_bw(bronze_stats)
     gold_actual_bw = get_final_bw(gold_stats)
 
+    stop_iperf3()
+
     GOLD_SLA = 7
-    plot_competition(bronze_stats, gold_stats, GOLD_SLA)
+    plot_competition(bronze_stats, gold_stats, GOLD_SLA, None, None, None)
 
     log.info(f"Gold Bandwidth {gold_actual_bw} Mbps")
     log.info(f"Bronze Bandwidth {bronze_actual_bw} Mbps")

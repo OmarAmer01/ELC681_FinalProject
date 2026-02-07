@@ -245,7 +245,6 @@ class LinearRegressionQoS(app_manager.RyuApp):
                     quiets_in_a_row >= self.FORCE_TALK
                 ]
             )
-            # is_about_to_talk = prediction >= (7 * (1 - self.EVENT_RANGE))
 
             if is_going_quiet and is_about_to_talk:
                 is_going_quiet = False

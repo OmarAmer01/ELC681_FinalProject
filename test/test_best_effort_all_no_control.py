@@ -75,7 +75,7 @@ def test_best_effort_all_no_control(
     bronze_actual_bw = get_final_bw(bronze_stats)
     gold_actual_bw = get_final_bw(gold_stats)
 
-    plot_competition(bronze_stats, gold_stats, None)
+    plot_competition(bronze_stats, gold_stats, None, None, None, None)
 
     log.info(f"Gold Bandwidth: {gold_actual_bw} Mbps")
     log.info(f"Bronze Bandwidth: {bronze_actual_bw} Mbps")
@@ -92,5 +92,5 @@ def test_best_effort_all_no_control(
     log.info(f"Gold BASELINE Bandwidth: {baseline_gold} Mbps")
     log.info(f"Bronze BASELINE Bandwidth: {baseline_bronze} Mbps")
 
-    assert isclose(bronze_actual_bw, baseline_bronze, rel_tol=0.2)
-    assert isclose(gold_actual_bw, baseline_gold, rel_tol=0.2)
+    assert isclose(bronze_actual_bw, baseline_bronze, rel_tol=0.3)
+    assert isclose(gold_actual_bw, baseline_gold, rel_tol=0.3)

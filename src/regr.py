@@ -64,6 +64,7 @@ if __name__ == "__main__":
         pred = model.predict(window)
         preds.append(pred)
 
+    plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.plot(time_axis, values[:-WINDOW], label="Input")
     ax.plot(time_axis, preds, label="Predicted")
