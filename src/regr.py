@@ -56,7 +56,7 @@ if __name__ == "__main__":
     model.fit(X, y)
 
     # Plotting
-    time_axis = np.arange(0, len(values) - WINDOW, 1, dtype=np.float32)
+    time_axis = np.arange(0, len(values), 1, dtype=np.float32)
 
     preds = []
     for i in range(len(values) - WINDOW):
@@ -64,9 +64,15 @@ if __name__ == "__main__":
         pred = model.predict(window)
         preds.append(pred)
 
+
+    # Add the first WINDOW points to preds to not mess up
+    # the MAE and MSE
+    preds = np.array(preds).reshape(-1)
+    preds = np.concatenate((values[:WINDOW], preds))
+    # breakpoint()
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(8, 5))
-    ax.plot(time_axis, values[:-WINDOW], label="Input")
+    ax.plot(time_axis, values, label="Input")
     ax.plot(time_axis, preds, label="Predicted")
     ax.set_xlabel("Time (s)", fontsize=14)
     ax.set_ylabel("Bandwidth (Mbps)", fontsize=14)
@@ -74,8 +80,8 @@ if __name__ == "__main__":
     plt.legend()
     plt.savefig("data/pred_" + args.data_csv.name.split('.')[0] + ".svg")
 
-    mae = mean_absolute_error(values[:-WINDOW], preds)
-    mse = mean_squared_error(values[:-WINDOW], preds)
+    mae = mean_absolute_error(values, preds)
+    mse = mean_squared_error(values, preds)
     print(f"Mean Absolute Error: {mae:.3f}")
     print(f"Mean Squared Error: {mse:.3f}")
 

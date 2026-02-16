@@ -20,11 +20,13 @@ all: clean model
 demo_dataset:
 	@sudo -E python3 -m src.data_gen 30
 
-dataset:
+data/MODEL_bw_list_600.csv:
 	@sudo -E python3 -m src.data_gen 600
 
-model: dataset
+data/MODEL_bw_list_600.pkl: data/MODEL_bw_list_600.csv
 	@sudo -E python3 src/regr.py --data-csv data/bw_list_600.csv
+
+model: data/MODEL_bw_list_600.pkl
 
 results:
 	python -m http.server
